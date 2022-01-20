@@ -12,7 +12,7 @@ public class CheckValidDeck : MonoBehaviour
     void Start()
     {
         cardValidationList = new List<GameObject>();
-        cardGetter = GameObject.Find("SaveObject").GetComponent<CardPrefabGetter>();
+        cardGetter = GameObject.Find("CardPrefabGetter").GetComponent<CardPrefabGetter>();
     }
 
     // Update is called once per frame
@@ -29,8 +29,7 @@ public class CheckValidDeck : MonoBehaviour
         TMP_Text card4 = GameObject.Find("Card3").transform.GetChild(0).GetComponent<TMP_Text>();
         TMP_Text card5 = GameObject.Find("Card4").transform.GetChild(0).GetComponent<TMP_Text>();
 
-        int amountOf4Stars = 2;
-        int amountOf5Stars = 1;
+        
 
         cardValidationList.Add(cardGetter.GetCard(card1.text));
         cardValidationList.Add(cardGetter.GetCard(card2.text));
@@ -39,9 +38,14 @@ public class CheckValidDeck : MonoBehaviour
         cardValidationList.Add(cardGetter.GetCard(card5.text));
 
         
-        //Check if doubles
+        //Check if you have two of the same card
         foreach (GameObject card in cardValidationList)
         {
+            if(card == null)
+            {
+                warningText.text = "You most fill all card slots to save!";
+                return;
+            }
             int doubles = 0;
             for (int i = 0; i < 5; i++)
             {
@@ -57,6 +61,33 @@ public class CheckValidDeck : MonoBehaviour
                 }
             }
         }
+        if (!ValidateStars(cardValidationList))
+        {
+            warningText.text = "You may only have two 4 stars cards or one 4 star and one 5 star card in the deck!";
+            return;
+        }
         SaveManager.Instance.SaveDeck(cardValidationList);
+    }
+    bool ValidateStars(List<GameObject> cards)
+    {
+        int amountOf4Stars = 2;
+        int amountOf5Stars = 1;
+        foreach (GameObject card in cards)
+        {
+            if (card.GetComponent<CardSettings>().StarLevel == 4)
+            {
+                amountOf4Stars--;
+            }
+            else if (card.GetComponent<CardSettings>().StarLevel == 5)
+            {
+                amountOf4Stars--;
+                amountOf5Stars--;
+            }
+            if (amountOf4Stars < 0 || amountOf5Stars < 0)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }
