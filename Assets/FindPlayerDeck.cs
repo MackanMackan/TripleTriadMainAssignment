@@ -10,6 +10,7 @@ public class FindPlayerDeck : MonoBehaviour
     TMP_Text findWarningText;
     GameObject[] cardPlaceholders;
     CardPrefabGetter cardGetter;
+    List<GameObject> tempList;
     void Start()
     {
         playerName = GameObject.Find("NameInput").GetComponent<TMP_InputField>();
@@ -17,21 +18,27 @@ public class FindPlayerDeck : MonoBehaviour
         cardGetter = GameObject.Find("CardPrefabGetter").GetComponent<CardPrefabGetter>();
         cardPlaceholders = new GameObject[5];
         playerInfo = new PlayerInfoData();
+        tempList = new List<GameObject>();
         for (int i = 0; i < cardPlaceholders.Length; i++)
         {
             cardPlaceholders[i] = GameObject.Find("CardPlaceholder" + i);
         }
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
     public void AddPlayerDeckToList()
     {
         //TODO: Clear list of instatiated cards!
+        foreach (var card in tempList)
+        {
+            Destroy(card);
+        }
+        tempList.Clear();
         try
         {
             string jsonData = SaveManager.Instance.LoadPlayerDataFromFile(playerName.text);
@@ -48,8 +55,9 @@ public class FindPlayerDeck : MonoBehaviour
     {
         for (int i = 0; i < 5; i++)
         {
-            var instanceCard = Instantiate(cardGetter.GetCard(playerInfo.Deck[i]),cardPlaceholders[i].transform);
-            instanceCard.transform.position = Vector3.zero;
+            var instanceCard = Instantiate(cardGetter.GetCard(playerInfo.Deck[i]), cardPlaceholders[i].transform);
+            instanceCard.transform.position = cardPlaceholders[i].transform.position;
+            tempList.Add(instanceCard);
         }
     }
 }
