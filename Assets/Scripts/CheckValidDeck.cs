@@ -14,12 +14,6 @@ public class CheckValidDeck : MonoBehaviour
         cardValidationList = new List<GameObject>();
         cardGetter = GameObject.Find("CardPrefabGetter").GetComponent<CardPrefabGetter>();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     public void ValidateDeck()
     {
         cardValidationList.Clear();

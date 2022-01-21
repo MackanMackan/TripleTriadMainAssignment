@@ -6,16 +6,6 @@ using TMPro;
 public class DeckConnector : MonoBehaviour
 {
     private TMP_Text deckText;
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     public void GetDecktext(TMP_Text text)
     {
         deckText = text;

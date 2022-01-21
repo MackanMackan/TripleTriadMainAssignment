@@ -5,9 +5,6 @@ using UnityEngine;
 public class CardPrefabGetter : MonoBehaviour
 {
     public List<GameObject> cardList;
-    void Start()
-    {
-    }
 
     public GameObject GetCard(string name)
     {
