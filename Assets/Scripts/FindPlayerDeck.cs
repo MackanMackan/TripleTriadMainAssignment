@@ -25,30 +25,16 @@ public class FindPlayerDeck : MonoBehaviour
         }
 
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     public void AddPlayerDeckToList()
     {
-        //TODO: Clear list of instatiated cards!
         foreach (var card in tempList)
         {
             Destroy(card);
         }
+
         tempList.Clear();
-        try
-        {
-            string jsonData = SaveManager.Instance.LoadPlayerDataFromFile(playerName.text);
-            playerInfo = JsonUtility.FromJson<PlayerInfoData>(jsonData);
-        }
-        catch (Exception)
-        {
-            findWarningText.text = "Could not find player!";
-            return;
-        }
+
+        playerInfo = SaveManager.Instance.LoadPlayerDataFromFile(playerName.text);
         DisplayListOnScreen();
     }
     private void DisplayListOnScreen()
