@@ -7,6 +7,7 @@ public class PlaceCardInField : MonoBehaviour
 {
     GameObject card;
     GameObject cardPlaceholder;
+    CombatNearbyCards combatCards;
     bool cardChosen = false;
 
     public void ChooseCardToPlay(GameObject chosenCard)
@@ -27,8 +28,10 @@ public class PlaceCardInField : MonoBehaviour
             card.transform.position = cardPlaceholder.transform.position;
             card.transform.localScale = new Vector3(4,4,0);
             card.GetComponent<Button>().onClick.RemoveAllListeners();
-           //cardPlaceholder.SetActive(false);
             cardChosen = false;
+            combatCards = cardPlaceholder.GetComponent<CombatNearbyCards>();
+            combatCards.MyCard = card.GetComponent<CardSettings>();
+            combatCards.Fight();
         }
     }
 }

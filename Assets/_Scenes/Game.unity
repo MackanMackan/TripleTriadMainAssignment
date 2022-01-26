@@ -281,10 +281,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b914422afb50a08459eb9fbe87eb4a81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placeHoldersToFight:
-  - {fileID: 1027948157}
-  - {fileID: 853036595}
-  - {fileID: 768651948}
+  topFighter: {fileID: 1027948157}
+  rightFighter: {fileID: 0}
+  bottomFighter: {fileID: 768651948}
+  leftFighter: {fileID: 853036595}
 --- !u!1 &111654506
 GameObject:
   m_ObjectHideFlags: 0
@@ -870,6 +870,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: PlaceCardInField, Assembly-CSharp
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &680375240
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -920,9 +932,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b914422afb50a08459eb9fbe87eb4a81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placeHoldersToFight:
-  - {fileID: 2014785905}
-  - {fileID: 1123537218}
+  topFighter: {fileID: 0}
+  rightFighter: {fileID: 2014785905}
+  bottomFighter: {fileID: 1123537218}
+  leftFighter: {fileID: 0}
 --- !u!1 &699260498
 GameObject:
   m_ObjectHideFlags: 0
@@ -1156,9 +1169,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b914422afb50a08459eb9fbe87eb4a81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placeHoldersToFight:
-  - {fileID: 2140644712}
-  - {fileID: 29770259}
+  topFighter: {fileID: 29770259}
+  rightFighter: {fileID: 0}
+  bottomFighter: {fileID: 0}
+  leftFighter: {fileID: 2140644712}
 --- !u!1 &782023402
 GameObject:
   m_ObjectHideFlags: 0
@@ -1683,11 +1697,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b914422afb50a08459eb9fbe87eb4a81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placeHoldersToFight:
-  - {fileID: 1123537218}
-  - {fileID: 29770259}
-  - {fileID: 2014785905}
-  - {fileID: 2140644712}
+  topFighter: {fileID: 2014785905}
+  rightFighter: {fileID: 29770259}
+  bottomFighter: {fileID: 2140644712}
+  leftFighter: {fileID: 1123537218}
 --- !u!1 &881408450
 GameObject:
   m_ObjectHideFlags: 0
@@ -1921,9 +1934,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b914422afb50a08459eb9fbe87eb4a81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placeHoldersToFight:
-  - {fileID: 2014785905}
-  - {fileID: 29770259}
+  topFighter: {fileID: 0}
+  rightFighter: {fileID: 0}
+  bottomFighter: {fileID: 29770259}
+  leftFighter: {fileID: 2014785905}
 --- !u!1 &1123537218
 GameObject:
   m_ObjectHideFlags: 0
@@ -2082,10 +2096,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b914422afb50a08459eb9fbe87eb4a81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placeHoldersToFight:
-  - {fileID: 680375237}
-  - {fileID: 853036595}
-  - {fileID: 1843944065}
+  topFighter: {fileID: 680375237}
+  rightFighter: {fileID: 853036595}
+  bottomFighter: {fileID: 1843944065}
+  leftFighter: {fileID: 0}
 --- !u!1 &1238233292
 GameObject:
   m_ObjectHideFlags: 0
@@ -2618,9 +2632,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b914422afb50a08459eb9fbe87eb4a81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placeHoldersToFight:
-  - {fileID: 1123537218}
-  - {fileID: 2140644712}
+  topFighter: {fileID: 1123537218}
+  rightFighter: {fileID: 2140644712}
+  bottomFighter: {fileID: 0}
+  leftFighter: {fileID: 0}
 --- !u!1 &1968801197
 GameObject:
   m_ObjectHideFlags: 0
@@ -2845,10 +2860,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b914422afb50a08459eb9fbe87eb4a81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placeHoldersToFight:
-  - {fileID: 680375237}
-  - {fileID: 1027948157}
-  - {fileID: 853036595}
+  topFighter: {fileID: 0}
+  rightFighter: {fileID: 1027948157}
+  bottomFighter: {fileID: 853036595}
+  leftFighter: {fileID: 680375237}
 --- !u!1 &2027878268
 GameObject:
   m_ObjectHideFlags: 0
@@ -3082,7 +3097,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b914422afb50a08459eb9fbe87eb4a81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placeHoldersToFight:
-  - {fileID: 1843944065}
-  - {fileID: 768651948}
-  - {fileID: 853036595}
+  topFighter: {fileID: 853036595}
+  rightFighter: {fileID: 768651948}
+  bottomFighter: {fileID: 0}
+  leftFighter: {fileID: 1843944065}
