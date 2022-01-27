@@ -34,8 +34,15 @@ public class FindPlayerDeck : MonoBehaviour
 
         tempList.Clear();
 
-        playerInfo = SaveManager.Instance.LoadPlayerDataFromFile(playerName.text);
-        DisplayListOnScreen();
+        playerInfo = SaveManager.Instance.LoadPlayerDataFromJsonSlave(playerName.text);
+        if (playerInfo.Name.Equals("Default"))
+        {
+            findWarningText.text = "Couldn't find player";
+        }
+        else
+        {
+            DisplayListOnScreen();
+        }
     }
     private void DisplayListOnScreen()
     {

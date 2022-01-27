@@ -97,7 +97,7 @@ public class SaveManager : MonoBehaviour
             Debug.Log(result);
         }
     }
-    public PlayerInfoData LoadPlayerDataFromFile(string playerName)
+    public PlayerInfoData LoadPlayerDataFromJsonSlave(string playerName)
     {
         StreamReader stream;
         string fileData;
@@ -130,9 +130,10 @@ public class SaveManager : MonoBehaviour
             Debug.Log("Didn't load correctly, applying Default");
             PlayerInfoData defaultPlayer = new PlayerInfoData();
             defaultPlayer.Name = "Default";
+            defaultPlayer.Deck = new List<string>();
             for (int i = 0; i < 5; i++)
             {
-                defaultPlayer.Deck[i] = "Eric Rod";
+                defaultPlayer.Deck.Add("Eric Rod");
             }
             return defaultPlayer;
         }

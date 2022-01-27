@@ -30,12 +30,13 @@ public class GetPlayerDecks : MonoBehaviour
     {
         try
         {
-            player1 = SaveManager.Instance.LoadPlayerDataFromFile(SaveManager.Instance.GetCurrentPlayerName());
+            player1 = SaveManager.Instance.LoadPlayerDataFromJsonSlave(SaveManager.Instance.GetCurrentPlayerName());
+            PlayerPrefs.SetString("PLAYER1",player1.Name);
         }
         catch (Exception)
         {
             Debug.Log("Could not find player! Choosing Default");
-            player1 = SaveManager.Instance.LoadPlayerDataFromFile("Default");
+            player1 = SaveManager.Instance.LoadPlayerDataFromJsonSlave("Default");
             return;
         }
         AddPlayerOneDeckToCardMenu();
@@ -55,12 +56,13 @@ public class GetPlayerDecks : MonoBehaviour
     {
         try
         {
-            player2 = SaveManager.Instance.LoadPlayerDataFromFile("Mackelashni");
+            player2 = SaveManager.Instance.LoadPlayerDataFromJsonSlave("Mackelashni");
+            PlayerPrefs.SetString("PLAYER2", player2.Name);
         }
         catch (Exception)
         {
             Debug.Log("Could not find player! Choosing Default");
-            player2 = SaveManager.Instance.LoadPlayerDataFromFile("Default");
+            player2 = SaveManager.Instance.LoadPlayerDataFromJsonSlave("Default");
             return;
         }
         AddPlayerTwoDeckToCardMenu();
@@ -76,5 +78,6 @@ public class GetPlayerDecks : MonoBehaviour
             instanceButton.onClick.AddListener(cardMenus.GetComponent<MoveChooseCardMenu>().MoveMenuAwayFromScreen);
             instanceButton.onClick.AddListener(delegate { placeCardInField.ChooseCardToPlay(instancedCard); });
         }
+        cardMenuPlTwo.SetActive(false);
     }
 }

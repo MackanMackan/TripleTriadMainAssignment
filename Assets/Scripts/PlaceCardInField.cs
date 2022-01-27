@@ -9,6 +9,11 @@ public class PlaceCardInField : MonoBehaviour
     GameObject cardPlaceholder;
     CombatNearbyCards combatCards;
     bool cardChosen = false;
+    ChangePlayerTurn changeTurn;
+    private void Start()
+    {
+        changeTurn = GetComponent<ChangePlayerTurn>();
+    }
 
     public void ChooseCardToPlay(GameObject chosenCard)
     {
@@ -32,6 +37,7 @@ public class PlaceCardInField : MonoBehaviour
             combatCards = cardPlaceholder.GetComponent<CombatNearbyCards>();
             combatCards.MyCard = card.GetComponent<CardSettings>();
             combatCards.Fight();
+            changeTurn.ChangeTurn();
         }
     }
 }

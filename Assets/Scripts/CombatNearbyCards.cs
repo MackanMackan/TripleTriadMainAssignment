@@ -17,6 +17,7 @@ public class CombatNearbyCards : MonoBehaviour
 
     CardSettings myCard;
     Sprite fightingPlayerFrame;
+    Image enemyPlayerFrame;
     List<int> myCardValues;
     List<int> enemyCardsValues;
     public CardSettings MyCard { get => myCard; set => myCard = value; }
@@ -38,22 +39,28 @@ public class CombatNearbyCards : MonoBehaviour
         GetFighters();
         AddMyCardValuesToList();
         GetfightingPlayerFrame();
+        MatchManager.AddScoreWhenPlayingCard(fightingPlayerFrame);
         for (int i = 0; i < 4; i++)
         {
-            if(enemyCardsValues[i] == 0)
+            if (enemyCardsValues[i] == 0)
             {
                 continue;
             }
-            if(myCardValues[i] > enemyCardsValues[i])
+            if (myCardValues[i] > enemyCardsValues[i])
             {
-                ReturnFighter(i).transform.GetChild(2).GetComponent<Image>().sprite = fightingPlayerFrame;
+                enemyPlayerFrame = ReturnFighter(i).transform.GetChild(2).GetComponent<Image>();
+                if (!enemyPlayerFrame.sprite.name.Equals(fightingPlayerFrame.name))
+                {
+                    enemyPlayerFrame.sprite = fightingPlayerFrame;
+                    MatchManager.ReportPlayerScore(fightingPlayerFrame);
+                }
             }
         }
 
     }
     void GetfightingPlayerFrame()
     {
-        fightingPlayerFrame =  myCard.transform.GetChild(2).GetComponent<Image>().sprite;
+        fightingPlayerFrame = myCard.transform.GetChild(2).GetComponent<Image>().sprite;
     }
     void GetFighters()
     {
