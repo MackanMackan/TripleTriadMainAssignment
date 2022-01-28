@@ -31,7 +31,7 @@ public class GetPlayerDecks : MonoBehaviour
         try
         {
             player1 = SaveManager.Instance.LoadPlayerDataFromJsonSlave(SaveManager.Instance.GetCurrentPlayerName());
-            PlayerPrefs.SetString("PLAYER1",player1.Name);
+            PlayerPrefs.SetString(SaveManager.PLAYER_ONE,player1.Name);
         }
         catch (Exception)
         {
@@ -56,8 +56,7 @@ public class GetPlayerDecks : MonoBehaviour
     {
         try
         {
-            player2 = SaveManager.Instance.LoadPlayerDataFromJsonSlave("Mackelashni");
-            PlayerPrefs.SetString("PLAYER2", player2.Name);
+            player2 = SaveManager.Instance.LoadPlayerDataFromJsonSlave(PlayerPrefs.GetString(SaveManager.PLAYER_TWO));
         }
         catch (Exception)
         {

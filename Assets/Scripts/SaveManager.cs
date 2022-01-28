@@ -9,6 +9,11 @@ using System.Net;
 public class SaveManager : MonoBehaviour
 {
     public static SaveManager Instance { get { return instance; }}
+
+    public static string PLAYER_TWO => PLAYER_2;
+
+    public static string PLAYER_ONE => PLAYER_1;
+
     public TMP_Text warningText;
 
     PlayerInfoData playerData;
@@ -16,6 +21,8 @@ public class SaveManager : MonoBehaviour
     private const string PLAYER_NAME = "PLAYER_NAME";
     private const string CURRENT_PLAYER_NAME = "CURRENT_PLAYER_NAME";
     private const string PLAYERDATA_FILE_ENDING = "InfoData";
+    private const string PLAYER_2 = "PLAYER2";
+    private const string PLAYER_1 = "PLAYER1";
     private const string PLAYER_DECK = "PLAYER_DECK";
     private void Awake()
     {
