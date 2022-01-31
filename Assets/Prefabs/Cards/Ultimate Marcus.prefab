@@ -185,6 +185,7 @@ MonoBehaviour:
   leftValue: 3
   starLevel: 3
   cardName: Ultimate Marcus
+  card: {fileID: 11400000, guid: 8b46a82c1b7d97d44a1c1779e71427ca, type: 2}
 --- !u!1 &2479182455842135307
 GameObject:
   m_ObjectHideFlags: 0

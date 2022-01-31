@@ -184,6 +184,7 @@ MonoBehaviour:
   leftValue: 7
   starLevel: 2
   cardName: White Sage
+  card: {fileID: 11400000, guid: f047ae016e4ed9b49afd5ebcadc097fa, type: 2}
 --- !u!1 &2919472008621265760
 GameObject:
   m_ObjectHideFlags: 0

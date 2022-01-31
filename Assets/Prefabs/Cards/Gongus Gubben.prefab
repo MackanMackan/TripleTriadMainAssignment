@@ -1172,6 +1172,7 @@ MonoBehaviour:
   leftValue: 8
   starLevel: 4
   cardName: Gongus Gubben
+  card: {fileID: 11400000, guid: 4ac647c49de86664785c771114ea3e0f, type: 2}
 --- !u!1 &8978420389122761629
 GameObject:
   m_ObjectHideFlags: 0

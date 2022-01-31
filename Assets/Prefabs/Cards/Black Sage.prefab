@@ -184,6 +184,7 @@ MonoBehaviour:
   leftValue: 2
   starLevel: 2
   cardName: Black Sage
+  card: {fileID: 11400000, guid: 26ae8df0b838a424588faec21ceed150, type: 2}
 --- !u!1 &3145993023630006344
 GameObject:
   m_ObjectHideFlags: 0

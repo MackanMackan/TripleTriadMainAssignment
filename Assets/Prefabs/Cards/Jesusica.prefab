@@ -223,7 +223,7 @@ GameObject:
   - component: {fileID: 3478524209964401897}
   - component: {fileID: 3478524209964401896}
   m_Layer: 5
-  m_Name: Jesusca
+  m_Name: Jesusica
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -394,6 +394,7 @@ MonoBehaviour:
   leftValue: 7
   starLevel: 3
   cardName: Jesusca
+  card: {fileID: 11400000, guid: 0ab9c5ef8f42bbe479f220706e43fe6e, type: 2}
 --- !u!1 &3504008564904960424
 GameObject:
   m_ObjectHideFlags: 0

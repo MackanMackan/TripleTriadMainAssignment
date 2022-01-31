@@ -33,16 +33,9 @@ public class FindPlayerDeck : MonoBehaviour
         }
 
         tempList.Clear();
-
-        playerInfo = SaveManager.Instance.LoadPlayerDataFromJsonSlave(playerName.text);
-        if (playerInfo.Name.Equals("Default"))
-        {
-            findWarningText.text = "Couldn't find player";
-        }
-        else
-        {
-            DisplayListOnScreen();
-        }
+        findWarningText.text = "Searching For Player...";
+        Invoke(nameof(LoadPlayerToList), 0.25f);
+       
     }
     private void DisplayListOnScreen()
     {
@@ -51,6 +44,19 @@ public class FindPlayerDeck : MonoBehaviour
             var instanceCard = Instantiate(cardGetter.GetCard(playerInfo.Deck[i]), cardPlaceholders[i].transform);
             instanceCard.transform.position = cardPlaceholders[i].transform.position;
             tempList.Add(instanceCard);
+        }
+    }
+    void LoadPlayerToList()
+    {
+        playerInfo = SaveManager.Instance.LoadPlayerDataFromJsonSlave(playerName.text);
+        if (playerInfo.Name.Equals("Default"))
+        {
+            findWarningText.text = "Couldn't find player";
+        }
+        else
+        {
+            DisplayListOnScreen();
+            findWarningText.text = "";
         }
     }
 }

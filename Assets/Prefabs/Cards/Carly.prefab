@@ -187,6 +187,7 @@ MonoBehaviour:
   leftValue: 6
   starLevel: 5
   cardName: Carly
+  card: {fileID: 11400000, guid: ba1e7104ec9c83a48943761e264448d3, type: 2}
 --- !u!1 &1177233239884861221
 GameObject:
   m_ObjectHideFlags: 0

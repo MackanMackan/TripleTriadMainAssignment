@@ -605,6 +605,7 @@ MonoBehaviour:
   leftValue: 10
   starLevel: 5
   cardName: Soap Gloob
+  card: {fileID: 11400000, guid: 196e3e1161cbd634ba5e70e68b8a0c56, type: 2}
 --- !u!1 &4238149429018417269
 GameObject:
   m_ObjectHideFlags: 0

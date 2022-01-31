@@ -6,19 +6,17 @@ using TMPro;
 
 public class CardSettings : MonoBehaviour
 {
-    [SerializeField]
-    private int topValue;
-    [SerializeField]
-    private int rightValue;
-    [SerializeField]
-    private int bottomValue;
-    [SerializeField]
-    private int leftValue;
-    [SerializeField]
-    private int starLevel;
-    [SerializeField]
-    private string cardName;
 
+    private int topValue;
+    private int rightValue;
+    private int bottomValue;
+    private int leftValue;
+    private int starLevel;
+
+    private string cardName;
+    private Image artWork;
+
+    public Card card;
     public int TopValue { get => topValue; }
     public int LeftValue { get => leftValue; }
     public int RightValue { get => rightValue; }
@@ -28,9 +26,19 @@ public class CardSettings : MonoBehaviour
 
     private void Start()
     {
-        transform.GetChild(3).GetComponent<TMP_Text>().text = ""+topValue;
-        transform.GetChild(4).GetComponent<TMP_Text>().text = ""+rightValue;
-        transform.GetChild(5).GetComponent<TMP_Text>().text = ""+bottomValue;
-        transform.GetChild(6).GetComponent<TMP_Text>().text = ""+leftValue;
+        cardName = card.cardName;
+        topValue = card.topValue;
+        rightValue = card.rightValue;
+        bottomValue = card.bottomValue;
+        leftValue = card.leftValue;
+        starLevel = card.starLevel;
+
+        artWork = transform.GetChild(1).GetComponent<Image>();
+        artWork.sprite = card.artWork;
+
+        transform.GetChild(3).GetComponent<TMP_Text>().text = "" + topValue;
+        transform.GetChild(4).GetComponent<TMP_Text>().text = "" + rightValue;
+        transform.GetChild(5).GetComponent<TMP_Text>().text = "" + bottomValue;
+        transform.GetChild(6).GetComponent<TMP_Text>().text = "" + leftValue;
     }
 }

@@ -754,6 +754,7 @@ MonoBehaviour:
   leftValue: 2
   starLevel: 4
   cardName: Cancelled Viktorius
+  card: {fileID: 11400000, guid: 62ed2a2df91c6f448ae3d2c7359668f0, type: 2}
 --- !u!1 &5177058414896021029
 GameObject:
   m_ObjectHideFlags: 0

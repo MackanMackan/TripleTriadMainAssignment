@@ -183,6 +183,7 @@ MonoBehaviour:
   leftValue: 2
   starLevel: 1
   cardName: Eric Blo
+  card: {fileID: 11400000, guid: 99926267f4ab35f44a4c9b535df56fd0, type: 2}
 --- !u!1 &939858860175324399
 GameObject:
   m_ObjectHideFlags: 0

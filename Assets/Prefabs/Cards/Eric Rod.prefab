@@ -751,6 +751,7 @@ MonoBehaviour:
   leftValue: 4
   starLevel: 1
   cardName: Eric Rod
+  card: {fileID: 11400000, guid: 753c8fde24096994cb1197e42a53bc7f, type: 2}
 --- !u!1 &7562533542992226616
 GameObject:
   m_ObjectHideFlags: 0
