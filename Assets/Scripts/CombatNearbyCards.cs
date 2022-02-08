@@ -28,12 +28,6 @@ public class CombatNearbyCards : MonoBehaviour
         enemyCardsValues = new List<int>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public void Fight()
     {
         GetFighters();

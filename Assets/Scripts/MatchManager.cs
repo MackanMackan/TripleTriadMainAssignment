@@ -22,11 +22,6 @@ public class MatchManager : MonoBehaviour, IChangeTurnObserver
         //TODO: flip coin who starts, and add one score to the other player to balance scoreing out
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     public void NotifyChangeTurn(bool playerOneTurn)
     {
         turns++;

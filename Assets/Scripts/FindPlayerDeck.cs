@@ -3,6 +3,7 @@ using System.IO;
 using System;
 using UnityEngine;
 using TMPro;
+
 public class FindPlayerDeck : MonoBehaviour
 {
     TMP_InputField playerName;
@@ -11,6 +12,8 @@ public class FindPlayerDeck : MonoBehaviour
     GameObject[] cardPlaceholders;
     CardPrefabGetter cardGetter;
     List<GameObject> tempList;
+
+    public static event OnSendMessage onSendMessage;
     private void OnEnable()
     {
         SaveManager.onPlayerLoad += GetLoadedPlayer;
@@ -46,7 +49,7 @@ public class FindPlayerDeck : MonoBehaviour
         }
 
         tempList.Clear();
-        findWarningText.text = "Searching For Player...";
+        onSendMessage?.Invoke("Searching For Player...");
         SaveManager.Instance.LoadPlayerDataFromFirebase();
     }
     private void DisplayListOnScreen()
@@ -63,17 +66,17 @@ public class FindPlayerDeck : MonoBehaviour
         
         if (playerInfo.Name.Equals("Default"))
         {
-            findWarningText.text = "Couldn't find player";
+            onSendMessage?.Invoke("Couldn't find player");
         }
         else
         {
             DisplayListOnScreen();
-            findWarningText.text = "";
+            onSendMessage?.Invoke("");
         }
     }
-    void GetLoadedPlayer()
+    void GetLoadedPlayer(PlayerInfoData playerData)
     {
-        playerInfo = SaveManager.Instance.GetLoadedPlayer();
+        playerInfo = playerData;
         LoadPlayerToList();
     }
 }

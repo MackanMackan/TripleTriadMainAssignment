@@ -17,16 +17,19 @@ public class GetPlayerDecks : MonoBehaviour
     {
         SaveManager.onPlayerLoad += AddPlayerOneDeck;
         SaveManager.onPlayerLoad += AddPlayerTwoDeck;
+        FireBaseUserAuthenticator.onDataBaseConnected += LoadDecksOnAfterDatabaseConnected;
     }
     private void OnDisable()
     {
         SaveManager.onPlayerLoad -= AddPlayerOneDeck;
         SaveManager.onPlayerLoad -= AddPlayerTwoDeck;
+        FireBaseUserAuthenticator.onDataBaseConnected -= LoadDecksOnAfterDatabaseConnected;
     }
     private void OnDestroy()
     {
         SaveManager.onPlayerLoad -= AddPlayerOneDeck;
         SaveManager.onPlayerLoad -= AddPlayerTwoDeck;
+        FireBaseUserAuthenticator.onDataBaseConnected -= LoadDecksOnAfterDatabaseConnected;
     }
     void Start()
     {
@@ -36,29 +39,25 @@ public class GetPlayerDecks : MonoBehaviour
         cardGetter = GameObject.Find("CardPrefabGetter").GetComponent<CardPrefabGetter>();
         placeCardInField = GameObject.Find("Canvas").GetComponent<PlaceCardInField>();
 
-        SaveManager.Instance.LoadPlayerDataFromFirebase();
     }
 
-
-    private void AddPlayerOneDeck()
+    void LoadDecksOnAfterDatabaseConnected()
     {
-        try
-        {
-            player1 = SaveManager.Instance.GetLoadedPlayer();
+        SaveManager.Instance.LoadPlayerDataFromFirebase();
+    }
+    void AddPlayerOneDeck(PlayerInfoData playerData)
+    {
+            player1 = playerData;
+            Debug.Log("PL1");
             PlayerPrefs.SetString(SaveManager.PLAYER_ONE,player1.Name);
-        }
-        catch (Exception)
-        {
-            Debug.Log("Could not find player! Choosing Default");
-            player1 = SaveManager.Instance.GetLoadedPlayer();
-            return;
-        }
+
         AddPlayerOneDeckToCardMenu();
     }
     private void AddPlayerOneDeckToCardMenu()
     {
         for (int i = 0; i < 5; i++)
         {
+            Debug.Log("PL1"+i);
             var instancedCard = Instantiate(cardGetter.GetCard(player1.Deck[i]), cardMenuPlOne.transform);
             instancedCard.transform.localPosition = new Vector2(-420,(Camera.main.pixelHeight/5)*i - 1222);
             Button instanceButton = instancedCard.GetComponent<Button>();
@@ -66,25 +65,17 @@ public class GetPlayerDecks : MonoBehaviour
             instanceButton.onClick.AddListener(delegate { placeCardInField.ChooseCardToPlay(instancedCard); });
         }
     }
-    private void AddPlayerTwoDeck()
+    private void AddPlayerTwoDeck(PlayerInfoData playerData)
     {
-        //TODO LOAD PLAYER 2
-        try
-        {
-            player2 = SaveManager.Instance.GetLoadedPlayer();
-        }
-        catch (Exception)
-        {
-            Debug.Log("Could not find player! Choosing Default");
-            player2 = SaveManager.Instance.GetLoadedPlayer();
-            return;
-        }
+            player2 = playerData;
+            Debug.Log("PL2");
         AddPlayerTwoDeckToCardMenu();
     }
     private void AddPlayerTwoDeckToCardMenu()
     {
         for (int i = 0; i < 5; i++)
         {
+            Debug.Log("PL2"+i);
             var instancedCard = Instantiate(cardGetter.GetCard(player2.Deck[i]), cardMenuPlTwo.transform);
             instancedCard.transform.localPosition = new Vector2(-420, (Camera.main.pixelHeight / 5) * i - 1222);
             instancedCard.transform.GetChild(2).GetComponent<Image>().sprite = playerTwoCardFrame;

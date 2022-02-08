@@ -10,7 +10,9 @@ using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
 
-public delegate void HasLoaded();
+public delegate void HasLoaded(PlayerInfoData playerData);
+public delegate void PlayerAndChallangerLoaded(PlayerInfoData playerData, PlayerInfoData challengerData);
+public delegate void OnSendMessage(string warningText);
 public class SaveManager : MonoBehaviour
 {
     public static SaveManager Instance { get { return instance; }}
@@ -19,7 +21,9 @@ public class SaveManager : MonoBehaviour
 
     public static string PLAYER_ONE => PLAYER_1;
     public static event HasLoaded onPlayerLoad;
-    public TMP_Text deckBuildingWarningText;
+    public static event PlayerAndChallangerLoaded onPlayerAndChallengerLoad;
+    public static event OnSendMessage onSendMessage;
+
    
 
     PlayerInfoData playerData;
@@ -52,7 +56,6 @@ public class SaveManager : MonoBehaviour
     public void SaveName(string name)
     {
         PlayerPrefs.SetString(PLAYER_NAME+name,name);
-        Debug.Log(name.IndexOf("@"));
         PlayerPrefs.SetString(CURRENT_PLAYER_NAME,name.Substring(0, name.IndexOf("@")));
 
         playerData.Name = name;
@@ -121,19 +124,45 @@ public class SaveManager : MonoBehaviour
                     {
                         Debug.LogError(task.Exception.Message);
                         playerData = GenerateDefaulPlayerDataInfo();
-                        onPlayerLoad?.Invoke();
+                        onPlayerLoad?.Invoke(playerData);
                     }
                     else
                     {
 
                         //here we get the result from our database.
                         DataSnapshot snap = task.Result;
-                        
+                        Debug.Log("Loading was success");
                         //And send the json data to a function that can update our game.
                         playerData = ConvertToPlayerInfoData(snap.GetRawJsonValue());
-                        onPlayerLoad?.Invoke();
+                        onPlayerLoad?.Invoke(playerData);
                     }
                 });
+    }
+    //TODO Send player and challanger
+    public void LoadPlayerAndChallangerDataFromFirebase()
+    {
+
+        var db = FirebaseDatabase.DefaultInstance;
+        var userId = FireBaseUserAuthenticator.Instance.auth.CurrentUser.UserId;
+        db.RootReference.Child("users").Child(userId).GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.Exception != null)
+            {
+                Debug.LogError(task.Exception.Message);
+                playerData = GenerateDefaulPlayerDataInfo();
+                onPlayerLoad?.Invoke(playerData);
+            }
+            else
+            {
+
+                //here we get the result from our database.
+                DataSnapshot snap = task.Result;
+                Debug.Log("Loading was success");
+                //And send the json data to a function that can update our game.
+                playerData = ConvertToPlayerInfoData(snap.GetRawJsonValue());
+                onPlayerLoad?.Invoke(playerData);
+            }
+        });
     }
     public PlayerInfoData GetLoadedPlayer()
     {
@@ -171,17 +200,12 @@ public class SaveManager : MonoBehaviour
             if (task.Exception != null)
             {
                 Debug.LogError(task.Exception.Message);
-                if (deckBuildingWarningText.enabled)
-                {
-                    deckBuildingWarningText.text = "Something went wrong when trying to save to database: " + task.Exception.Message;
-                }
+
+                onSendMessage?.Invoke("Something went wrong when trying to save to database: " + task.Exception.Message);
             }
             else
             {
-                if (deckBuildingWarningText.enabled)
-                {
-                    deckBuildingWarningText.text = "Deck Saved!";
-                }
+                onSendMessage?.Invoke("Deck Saved!");
             }
         });
     }

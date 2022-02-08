@@ -5,8 +5,10 @@ using Firebase.Auth;
 using Firebase;
 using Firebase.Database;
 using Firebase.Extensions;
+using UnityEngine.SceneManagement;
 using TMPro;
 
+public delegate void HasConnectedToDataBase();
 public class FireBaseUserAuthenticator : MonoBehaviour
 {
     private static FireBaseUserAuthenticator instance;
@@ -17,6 +19,9 @@ public class FireBaseUserAuthenticator : MonoBehaviour
     public TMP_Text password;
     public GameObject loginMenu;
     public GameObject mainMenu;
+
+    public static event OnSendMessage onSendMessage;
+    public static event HasConnectedToDataBase onDataBaseConnected;
     private void Awake()
     {
         if (instance == null)
@@ -34,11 +39,6 @@ public class FireBaseUserAuthenticator : MonoBehaviour
         ConnectToFireBase();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     public void RegisterNewUser()
     {
         Debug.Log("Starting Registration");
@@ -47,6 +47,7 @@ public class FireBaseUserAuthenticator : MonoBehaviour
             if (task.Exception != null)
             {
                 Debug.LogWarning(task.Exception);
+                onSendMessage?.Invoke("Invalid Email/Password");
             }
             else
             {
@@ -54,6 +55,7 @@ public class FireBaseUserAuthenticator : MonoBehaviour
                 Debug.LogFormat("User Registerd: {0} ({1})",
                   newUser.DisplayName, newUser.UserId);
                 SaveManager.Instance.SaveName(email.text);
+                onSendMessage?.Invoke("Registration Complete");
                 loginMenu.SetActive(false);
                 mainMenu.SetActive(true);
             }
@@ -67,6 +69,7 @@ public class FireBaseUserAuthenticator : MonoBehaviour
             if (task.Exception != null)
             {
                 Debug.LogWarning(task.Exception.Message);
+                onSendMessage?.Invoke("Invalid Email/Password");
             }
             else
             {
@@ -74,6 +77,28 @@ public class FireBaseUserAuthenticator : MonoBehaviour
                 Debug.LogFormat("User signed in successfully: {0} ({1})",
                   newUser.DisplayName, newUser.UserId);
                 SaveManager.Instance.SaveName(email.text);
+                onSendMessage?.Invoke("Logged In Succuessfully");
+                loginMenu.SetActive(false);
+                mainMenu.SetActive(true);
+            }
+        });
+    }
+    public void InstantSignIn()
+    {
+        auth.SignInWithEmailAndPasswordAsync("test2@test.test","Test123!").ContinueWithOnMainThread(task =>
+        {
+            if (task.Exception != null)
+            {
+                Debug.LogWarning(task.Exception.Message);
+                onSendMessage?.Invoke("Invalid Email/Password");
+            }
+            else
+            {
+                FirebaseUser newUser = task.Result;
+                Debug.LogFormat("User signed in successfully: {0} ({1})",
+                  newUser.DisplayName, newUser.UserId);
+                SaveManager.Instance.SaveName("test2@test.test");
+                onSendMessage?.Invoke("Logged In Succuessfully");
                 loginMenu.SetActive(false);
                 mainMenu.SetActive(true);
             }
@@ -84,15 +109,19 @@ public class FireBaseUserAuthenticator : MonoBehaviour
     {
         auth.SignOut();
         Debug.Log("User signed out");
+        onSendMessage?.Invoke("Signed Out");
     }
     private void ConnectToFireBase()
     {
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
         {
             if (task.Exception != null)
+            {
                 Debug.LogError(task.Exception);
-
+                onSendMessage?.Invoke("Failure to connect to Firebase");
+            }
             auth = FirebaseAuth.DefaultInstance;
+            onDataBaseConnected?.Invoke();
         });
     }
 }

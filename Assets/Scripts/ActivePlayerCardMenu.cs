@@ -14,11 +14,6 @@ public class ActivePlayerCardMenu : MonoBehaviour, IChangeTurnObserver
         player2CardMenu = GameObject.Find("PlayerTwoCardMenu");
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     public void NotifyChangeTurn(bool playerOneTurn)
     {
         if (player1CardMenu)

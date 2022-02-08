@@ -13,19 +13,11 @@ public class AddChallenger : MonoBehaviour
     GameObject challengeBlocker;
 
     TMP_InputField challenger;
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public static event OnSendMessage onSendMessage;
     public void GetChallenger(TMP_InputField challenger)
     {
-        warningText.text ="Searching for "+ challenger.text;
+        onSendMessage?.Invoke("Searching for "+ challenger.text);
         this.challenger = challenger;
         Invoke(nameof(SearchForPayer),0.2f);
        
@@ -34,13 +26,13 @@ public class AddChallenger : MonoBehaviour
     {
         if (SaveManager.Instance.GetLoadedPlayer().Name.Equals("Default"))
         {
-            warningText.text = "Could not find " + challenger.text + "!";
+            onSendMessage?.Invoke("Could not find " + challenger.text + "!");
             challengeBlocker.SetActive(false);
         }
         else
         {
             PlayerPrefs.SetString(SaveManager.PLAYER_TWO, challenger.text);
-            warningText.text = challenger.text + " found!";
+            onSendMessage?.Invoke(challenger.text + " found!");
             challengeBlocker.SetActive(true);
         }
     }
