@@ -11,6 +11,18 @@ public class FindPlayerDeck : MonoBehaviour
     GameObject[] cardPlaceholders;
     CardPrefabGetter cardGetter;
     List<GameObject> tempList;
+    private void OnEnable()
+    {
+        SaveManager.onPlayerLoad += GetLoadedPlayer;
+    }
+    private void OnDisable()
+    {
+        SaveManager.onPlayerLoad -= GetLoadedPlayer;
+    }
+    private void OnDestroy()
+    {
+        SaveManager.onPlayerLoad -= GetLoadedPlayer;
+    }
     void Start()
     {
         playerName = GameObject.Find("NameInput").GetComponent<TMP_InputField>();
@@ -19,6 +31,7 @@ public class FindPlayerDeck : MonoBehaviour
         cardPlaceholders = new GameObject[5];
         playerInfo = new PlayerInfoData();
         tempList = new List<GameObject>();
+
         for (int i = 0; i < cardPlaceholders.Length; i++)
         {
             cardPlaceholders[i] = GameObject.Find("CardPlaceholder" + i);
@@ -34,8 +47,7 @@ public class FindPlayerDeck : MonoBehaviour
 
         tempList.Clear();
         findWarningText.text = "Searching For Player...";
-        Invoke(nameof(LoadPlayerToList), 0.25f);
-       
+        SaveManager.Instance.LoadPlayerDataFromFirebase();
     }
     private void DisplayListOnScreen()
     {
@@ -48,7 +60,7 @@ public class FindPlayerDeck : MonoBehaviour
     }
     void LoadPlayerToList()
     {
-        playerInfo = SaveManager.Instance.LoadPlayerDataFromJsonSlave(playerName.text);
+        
         if (playerInfo.Name.Equals("Default"))
         {
             findWarningText.text = "Couldn't find player";
@@ -58,5 +70,10 @@ public class FindPlayerDeck : MonoBehaviour
             DisplayListOnScreen();
             findWarningText.text = "";
         }
+    }
+    void GetLoadedPlayer()
+    {
+        playerInfo = SaveManager.Instance.GetLoadedPlayer();
+        LoadPlayerToList();
     }
 }

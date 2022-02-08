@@ -5,7 +5,12 @@ using System.IO;
 using System;
 using System.Text;
 using System.Net;
+using Firebase;
+using Firebase.Auth;
+using Firebase.Database;
+using Firebase.Extensions;
 
+public delegate void HasLoaded();
 public class SaveManager : MonoBehaviour
 {
     public static SaveManager Instance { get { return instance; }}
@@ -13,17 +18,19 @@ public class SaveManager : MonoBehaviour
     public static string PLAYER_TWO => PLAYER_2;
 
     public static string PLAYER_ONE => PLAYER_1;
-
-    public TMP_Text warningText;
+    public static event HasLoaded onPlayerLoad;
+    public TMP_Text deckBuildingWarningText;
+   
 
     PlayerInfoData playerData;
+    GameData gameData;
     private static SaveManager instance;
+
     private const string PLAYER_NAME = "PLAYER_NAME";
     private const string CURRENT_PLAYER_NAME = "CURRENT_PLAYER_NAME";
     private const string PLAYERDATA_FILE_ENDING = "InfoData";
     private const string PLAYER_2 = "PLAYER2";
     private const string PLAYER_1 = "PLAYER1";
-    private const string PLAYER_DECK = "PLAYER_DECK";
     private void Awake()
     {
         if(instance == null)
@@ -45,7 +52,8 @@ public class SaveManager : MonoBehaviour
     public void SaveName(string name)
     {
         PlayerPrefs.SetString(PLAYER_NAME+name,name);
-        PlayerPrefs.SetString(CURRENT_PLAYER_NAME,name);
+        Debug.Log(name.IndexOf("@"));
+        PlayerPrefs.SetString(CURRENT_PLAYER_NAME,name.Substring(0, name.IndexOf("@")));
 
         playerData.Name = name;
     }
@@ -57,7 +65,6 @@ public class SaveManager : MonoBehaviour
 
     public void SaveDeck(List<GameObject> cardList)
     {
-        warningText.text = "Deck Saved!";
         playerData.Deck.Clear();
         string cardname;
         for (int i = 0; i < 5; i++)
@@ -72,8 +79,7 @@ public class SaveManager : MonoBehaviour
     {
         string jsonData = JsonUtility.ToJson(playerData);
 
-        SaveToFile(jsonData);
-        SaveToJsonSlave(jsonData);
+        SaveToFirebase(jsonData);
     }
     private void SaveToFile(string jsonData)
     {
@@ -104,45 +110,79 @@ public class SaveManager : MonoBehaviour
             Debug.Log(result);
         }
     }
-    public PlayerInfoData LoadPlayerDataFromJsonSlave(string playerName)
+    public void LoadPlayerDataFromFirebase()
     {
-        StreamReader stream;
-        string fileData;
-        playerName.ToLower();
-        try
-        {
-            using (stream = File.OpenText(playerName + PLAYERDATA_FILE_ENDING + ".json"))
-            {
-                fileData = stream.ReadToEnd();
-            }
-
-            var request = (HttpWebRequest)WebRequest.Create("http://localhost:8080/" + playerName + PLAYERDATA_FILE_ENDING);
-            var response = (HttpWebResponse)request.GetResponse();
-
-            // Open a stream to the server so we can read the response data 
-            // it sent back from our GET request
-            using (var streamOnline = response.GetResponseStream())
-            {
-                using (var reader = new StreamReader(streamOnline))
-                {
-                    string onlineFile = reader.ReadToEnd();
-                    Debug.Log(fileData.Equals(onlineFile));
                 
-                    return JsonUtility.FromJson<PlayerInfoData>(onlineFile);
+                var db = FirebaseDatabase.DefaultInstance;
+                var userId = FireBaseUserAuthenticator.Instance.auth.CurrentUser.UserId;
+                db.RootReference.Child("users").Child(userId).GetValueAsync().ContinueWithOnMainThread(task =>
+                {
+                    if (task.Exception != null)
+                    {
+                        Debug.LogError(task.Exception.Message);
+                        playerData = GenerateDefaulPlayerDataInfo();
+                        onPlayerLoad?.Invoke();
+                    }
+                    else
+                    {
+
+                        //here we get the result from our database.
+                        DataSnapshot snap = task.Result;
+                        
+                        //And send the json data to a function that can update our game.
+                        playerData = ConvertToPlayerInfoData(snap.GetRawJsonValue());
+                        onPlayerLoad?.Invoke();
+                    }
+                });
+    }
+    public PlayerInfoData GetLoadedPlayer()
+    {
+        return playerData;
+    }
+    private PlayerInfoData GenerateDefaulPlayerDataInfo()
+    {
+        Debug.Log("Didn't load correctly, applying Default");
+        PlayerInfoData defaultPlayer = new PlayerInfoData();
+        defaultPlayer.Name = "Default";
+        defaultPlayer.Deck = new List<string>();
+        for (int i = 0; i < 5; i++)
+        {
+            defaultPlayer.Deck.Add("Eric Rod");
+        }
+        return defaultPlayer;
+    }
+
+    private PlayerInfoData ConvertToPlayerInfoData(string jsonData)
+    {
+
+        playerData = JsonUtility.FromJson<PlayerInfoData>(jsonData);
+        return playerData;
+    }
+
+   
+    private void SaveToFirebase(string data)
+    {
+        Debug.Log("Trying to save to firebase...");
+        var db = FirebaseDatabase.DefaultInstance;
+        var userId = FireBaseUserAuthenticator.Instance.auth.CurrentUser.UserId;
+        //puts the json data in the "users/userId" part of the database.
+        db.RootReference.Child("users").Child(userId).SetRawJsonValueAsync(data).ContinueWithOnMainThread(task =>
+        {
+            if (task.Exception != null)
+            {
+                Debug.LogError(task.Exception.Message);
+                if (deckBuildingWarningText.enabled)
+                {
+                    deckBuildingWarningText.text = "Something went wrong when trying to save to database: " + task.Exception.Message;
                 }
             }
-        }
-        catch (Exception)
-        {
-            Debug.Log("Didn't load correctly, applying Default");
-            PlayerInfoData defaultPlayer = new PlayerInfoData();
-            defaultPlayer.Name = "Default";
-            defaultPlayer.Deck = new List<string>();
-            for (int i = 0; i < 5; i++)
+            else
             {
-                defaultPlayer.Deck.Add("Eric Rod");
+                if (deckBuildingWarningText.enabled)
+                {
+                    deckBuildingWarningText.text = "Deck Saved!";
+                }
             }
-            return defaultPlayer;
-        }
+        });
     }
 }

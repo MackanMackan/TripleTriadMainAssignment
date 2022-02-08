@@ -373,7 +373,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Black Sage
+          m_StringArgument: Jesusica
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &3478524209964401896
@@ -388,12 +388,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f126817242cde74f8f642718afb6fdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  topValue: 7
-  rightValue: 1
-  bottomValue: 6
-  leftValue: 7
-  starLevel: 3
-  cardName: Jesusca
   card: {fileID: 11400000, guid: 0ab9c5ef8f42bbe479f220706e43fe6e, type: 2}
 --- !u!1 &3504008564904960424
 GameObject:

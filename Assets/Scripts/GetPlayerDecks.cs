@@ -13,6 +13,21 @@ public class GetPlayerDecks : MonoBehaviour
     GameObject cardMenus;
     CardPrefabGetter cardGetter;
     PlaceCardInField placeCardInField;
+    private void OnEnable()
+    {
+        SaveManager.onPlayerLoad += AddPlayerOneDeck;
+        SaveManager.onPlayerLoad += AddPlayerTwoDeck;
+    }
+    private void OnDisable()
+    {
+        SaveManager.onPlayerLoad -= AddPlayerOneDeck;
+        SaveManager.onPlayerLoad -= AddPlayerTwoDeck;
+    }
+    private void OnDestroy()
+    {
+        SaveManager.onPlayerLoad -= AddPlayerOneDeck;
+        SaveManager.onPlayerLoad -= AddPlayerTwoDeck;
+    }
     void Start()
     {
         cardMenuPlOne = GameObject.Find("PlayerOneCardMenu");
@@ -21,8 +36,7 @@ public class GetPlayerDecks : MonoBehaviour
         cardGetter = GameObject.Find("CardPrefabGetter").GetComponent<CardPrefabGetter>();
         placeCardInField = GameObject.Find("Canvas").GetComponent<PlaceCardInField>();
 
-        AddPlayerOneDeck();
-        AddPlayerTwoDeck();
+        SaveManager.Instance.LoadPlayerDataFromFirebase();
     }
 
 
@@ -30,13 +44,13 @@ public class GetPlayerDecks : MonoBehaviour
     {
         try
         {
-            player1 = SaveManager.Instance.LoadPlayerDataFromJsonSlave(SaveManager.Instance.GetCurrentPlayerName());
+            player1 = SaveManager.Instance.GetLoadedPlayer();
             PlayerPrefs.SetString(SaveManager.PLAYER_ONE,player1.Name);
         }
         catch (Exception)
         {
             Debug.Log("Could not find player! Choosing Default");
-            player1 = SaveManager.Instance.LoadPlayerDataFromJsonSlave("Default");
+            player1 = SaveManager.Instance.GetLoadedPlayer();
             return;
         }
         AddPlayerOneDeckToCardMenu();
@@ -54,14 +68,15 @@ public class GetPlayerDecks : MonoBehaviour
     }
     private void AddPlayerTwoDeck()
     {
+        //TODO LOAD PLAYER 2
         try
         {
-            player2 = SaveManager.Instance.LoadPlayerDataFromJsonSlave(PlayerPrefs.GetString(SaveManager.PLAYER_TWO));
+            player2 = SaveManager.Instance.GetLoadedPlayer();
         }
         catch (Exception)
         {
             Debug.Log("Could not find player! Choosing Default");
-            player2 = SaveManager.Instance.LoadPlayerDataFromJsonSlave("Default");
+            player2 = SaveManager.Instance.GetLoadedPlayer();
             return;
         }
         AddPlayerTwoDeckToCardMenu();
