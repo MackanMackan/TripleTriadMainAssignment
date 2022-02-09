@@ -36,4 +36,19 @@ public class AddChallenger : MonoBehaviour
             challengeBlocker.SetActive(true);
         }
     }
+    void LoadGameSession()
+    {
+        //Will load gamedata from database
+    }
+    void CheckIfEmptySpotInGame()
+    {
+        //check the loaded gamedate if there is full or if you can join
+        //Give error message if you cant
+        //If you can join make button join apear
+    }
+    void JoinGameSession()
+    {
+        //On join button click join game
+        //Add this player to gamedata on Player1 or Player2 Spot, which ever is first available
+    }
 }
