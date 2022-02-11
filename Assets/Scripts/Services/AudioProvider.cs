@@ -55,8 +55,9 @@ public class AudioProvider : IAudioService
     public void PlayLoop(AudioClip clip)
     {
         AudioSource source = GetAvailableAudioSource();
-        source.PlayOneShot(clip);
+        source.clip = clip;
         source.loop = true;
+        source.Play();
     }
 
     public void PlayOneShot(string clipName)
