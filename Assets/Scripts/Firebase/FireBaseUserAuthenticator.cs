@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 
 public delegate void HasConnectedToDataBase();
+public delegate void OnSignIn();
 public class FireBaseUserAuthenticator : MonoBehaviour
 {
     private static FireBaseUserAuthenticator instance;
@@ -22,6 +23,7 @@ public class FireBaseUserAuthenticator : MonoBehaviour
 
     public static event OnSendMessage onSendMessage;
     public static event HasConnectedToDataBase onDataBaseConnected;
+    public static event OnSignIn onSignIn;
     private void Awake()
     {
         if (instance == null)
@@ -55,7 +57,10 @@ public class FireBaseUserAuthenticator : MonoBehaviour
                 Debug.LogFormat("User Registerd: {0} ({1})",
                   newUser.DisplayName, newUser.UserId);
                 SaveManager.Instance.SaveName(email.text);
+
                 onSendMessage?.Invoke("Registration Complete");
+                onSignIn?.Invoke();
+
                 loginMenu.SetActive(false);
                 mainMenu.SetActive(true);
             }
@@ -78,6 +83,7 @@ public class FireBaseUserAuthenticator : MonoBehaviour
                   newUser.DisplayName, newUser.UserId);
                 SaveManager.Instance.SaveName(email.text);
                 onSendMessage?.Invoke("Logged In Succuessfully");
+                onSignIn?.Invoke();
                 loginMenu.SetActive(false);
                 mainMenu.SetActive(true);
             }
@@ -99,6 +105,7 @@ public class FireBaseUserAuthenticator : MonoBehaviour
                   newUser.DisplayName, newUser.UserId);
                 SaveManager.Instance.SaveName("test2@test.test");
                 onSendMessage?.Invoke("Logged In Succuessfully");
+                onSignIn?.Invoke();
                 loginMenu.SetActive(false);
                 mainMenu.SetActive(true);
             }
@@ -121,6 +128,7 @@ public class FireBaseUserAuthenticator : MonoBehaviour
                 onSendMessage?.Invoke("Failure to connect to Firebase");
             }
             auth = FirebaseAuth.DefaultInstance;
+            Debug.Log("Connected to Firebase");
             onDataBaseConnected?.Invoke();
         });
     }

@@ -1,11 +1,11 @@
-using System;
-using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GetPlayerDecks : MonoBehaviour
 {
     public Sprite playerTwoCardFrame;
+    List<PlayerInfoData> playDataList;
     PlayerInfoData player1;
     PlayerInfoData player2;
     GameObject cardMenuPlOne;
@@ -15,21 +15,24 @@ public class GetPlayerDecks : MonoBehaviour
     PlaceCardInField placeCardInField;
     private void OnEnable()
     {
-        SaveManager.onPlayerLoad += AddPlayerOneDeck;
-        SaveManager.onPlayerLoad += AddPlayerTwoDeck;
-        FireBaseUserAuthenticator.onDataBaseConnected += LoadDecksOnAfterDatabaseConnected;
+        FireBaseUserAuthenticator.onDataBaseConnected += LoadThisPlayer;
+        SaveManager.onPlayerLoad += LoadDecksOnAfterDatabaseConnected;
+        SaveManager.onStartGameSessionLoaded += LoadPlayers;
+        SaveManager.onMultiplePlayersLoaded += GetLoadedPlayers;
     }
     private void OnDisable()
     {
-        SaveManager.onPlayerLoad -= AddPlayerOneDeck;
-        SaveManager.onPlayerLoad -= AddPlayerTwoDeck;
-        FireBaseUserAuthenticator.onDataBaseConnected -= LoadDecksOnAfterDatabaseConnected;
+        FireBaseUserAuthenticator.onDataBaseConnected -= LoadThisPlayer;
+        SaveManager.onPlayerLoad -= LoadDecksOnAfterDatabaseConnected;
+        SaveManager.onStartGameSessionLoaded -= LoadPlayers;
+        SaveManager.onMultiplePlayersLoaded -= GetLoadedPlayers;
     }
     private void OnDestroy()
     {
-        SaveManager.onPlayerLoad -= AddPlayerOneDeck;
-        SaveManager.onPlayerLoad -= AddPlayerTwoDeck;
-        FireBaseUserAuthenticator.onDataBaseConnected -= LoadDecksOnAfterDatabaseConnected;
+        FireBaseUserAuthenticator.onDataBaseConnected -= LoadThisPlayer;
+        SaveManager.onPlayerLoad -= LoadDecksOnAfterDatabaseConnected;
+        SaveManager.onStartGameSessionLoaded -= LoadPlayers;
+        SaveManager.onMultiplePlayersLoaded -= GetLoadedPlayers;
     }
     void Start()
     {
@@ -38,17 +41,34 @@ public class GetPlayerDecks : MonoBehaviour
         cardMenus = GameObject.Find("CardMenus");
         cardGetter = GameObject.Find("CardPrefabGetter").GetComponent<CardPrefabGetter>();
         placeCardInField = GameObject.Find("Canvas").GetComponent<PlaceCardInField>();
-
+        playDataList = new List<PlayerInfoData>();
     }
-
+    void LoadThisPlayer()
+    {
+        SaveManager.Instance.LoadPlayerDataFromFirebase(FireBaseUserAuthenticator.Instance.auth.CurrentUser.UserId);
+    }
     void LoadDecksOnAfterDatabaseConnected()
     {
-        SaveManager.Instance.LoadPlayerDataFromFirebase();
+        Debug.Log("Kuck1");
+        SaveManager.Instance.LoadPlayerGameSession(SaveManager.Instance.PlayerData.inGameID[0]);
     }
-    void AddPlayerOneDeck(PlayerInfoData playerData)
+    void LoadPlayers(GameData gameData)
     {
-            player1 = playerData;
-            PlayerPrefs.SetString(SaveManager.PLAYER_ONE,player1.Name);
+        Debug.Log("Kuck2");
+        SaveManager.Instance.LoadMultiplePlayerDataFromFirebase(gameData.playerIDs);
+    }
+    void GetLoadedPlayers()
+    {
+        Debug.Log("Kuck3");
+        playDataList = SaveManager.Instance.GetPlayersDataForGameSession();
+        AddPlayerOneDeck();
+        AddPlayerTwoDeck();
+    }
+    void AddPlayerOneDeck()
+    {
+        player1 = playDataList[0];
+        Debug.Log("Player1 Name: " + player1.Name);
+        PlayerPrefs.SetString(SaveManager.PLAYER_ONE,player1.Name);
 
         AddPlayerOneDeckToCardMenu();
     }
@@ -63,9 +83,11 @@ public class GetPlayerDecks : MonoBehaviour
             instanceButton.onClick.AddListener(delegate { placeCardInField.ChooseCardToPlay(instancedCard); });
         }
     }
-    private void AddPlayerTwoDeck(PlayerInfoData playerData)
+    private void AddPlayerTwoDeck()
     {
-            player2 = playerData;
+        player2 = playDataList[1];
+        Debug.Log("Player2 Name: " + player2.Name);
+        PlayerPrefs.SetString(SaveManager.PLAYER_TWO, player2.Name);
         AddPlayerTwoDeckToCardMenu();
     }
     private void AddPlayerTwoDeckToCardMenu()

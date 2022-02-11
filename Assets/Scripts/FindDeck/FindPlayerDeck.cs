@@ -70,9 +70,9 @@ public class FindPlayerDeck : MonoBehaviour
             onSendMessage?.Invoke("");
         }
     }
-    void GetLoadedPlayer(PlayerInfoData playerData)
+    void GetLoadedPlayer()
     {
-        playerInfo = playerData;
+        playerInfo = SaveManager.Instance.GetLoadedPlayer();
         LoadPlayerToList();
     }
 }

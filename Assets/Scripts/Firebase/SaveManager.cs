@@ -1,43 +1,42 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using System.IO;
-using System;
 using System.Text;
-using System.Net;
-using Firebase;
-using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
 
-public delegate void HasLoaded(PlayerInfoData playerData);
-public delegate void PlayerAndChallangerLoaded(PlayerInfoData playerData, PlayerInfoData challengerData);
+public delegate void HasLoaded();
 public delegate void OnSendMessage(string warningText);
 public delegate void OnGameSessionSaved();
 public delegate void OnGameSessionsLoaded();
+public delegate void OnStartGameSessionLoaded(GameData data);
+public delegate void OnMultiplePlayersLoaded();
 public class SaveManager : MonoBehaviour
 {
-    public static SaveManager Instance { get { return instance; }}
+    public static SaveManager Instance { get { return instance; } }
 
     public static string PLAYER_TWO => PLAYER_2;
 
     public static string PLAYER_ONE => PLAYER_1;
 
-    public List<GameData> GameSessions { get => gameSessions;}
-    public PlayerInfoData PlayerData { get => playerData;}
+    public List<GameData> GameSessions { get => gameSessions; }
+    public PlayerInfoData PlayerData { get => playerData; }
 
     public static event HasLoaded onPlayerLoad;
-    public static event PlayerAndChallangerLoaded onPlayerAndChallengerLoad;
     public static event OnSendMessage onSendMessage;
     public static event OnGameSessionSaved onGameSessionSaved;
     public static event OnGameSessionsLoaded onGameSessionsLoaded;
+    public static event OnStartGameSessionLoaded onStartGameSessionLoaded;
+    public static event OnMultiplePlayersLoaded onMultiplePlayersLoaded;
 
-   
+
+
 
     PlayerInfoData playerData;
     GameData gameData;
     private static SaveManager instance;
     private List<GameData> gameSessions;
+    List<PlayerInfoData> playerDataList;
     FirebaseDatabase db;
     private const string PLAYER_NAME = "PLAYER_NAME";
     private const string CURRENT_PLAYER_NAME = "CURRENT_PLAYER_NAME";
@@ -46,7 +45,7 @@ public class SaveManager : MonoBehaviour
     private const string PLAYER_1 = "PLAYER1";
     private void Awake()
     {
-        if(instance == null)
+        if (instance == null)
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
@@ -65,7 +64,9 @@ public class SaveManager : MonoBehaviour
         gameData.cardsOnField = new List<GameObject>();
         playerData.Deck = new List<string>();
         playerData.inGameID = new List<string>();
+        playerDataList = new List<PlayerInfoData>();
         FireBaseUserAuthenticator.onDataBaseConnected += SetDatabase;
+        FireBaseUserAuthenticator.onSignIn += LoadPlayerDataFromFirebase;
     }
 
     void SetDatabase()
@@ -74,8 +75,8 @@ public class SaveManager : MonoBehaviour
     }
     public void SaveName(string name)
     {
-        PlayerPrefs.SetString(PLAYER_NAME+name,name);
-        PlayerPrefs.SetString(CURRENT_PLAYER_NAME,name.Substring(0, name.IndexOf("@")));
+        PlayerPrefs.SetString(PLAYER_NAME + name, name);
+        PlayerPrefs.SetString(CURRENT_PLAYER_NAME, name.Substring(0, name.IndexOf("@")));
 
         playerData.Name = name;
     }
@@ -91,16 +92,10 @@ public class SaveManager : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             cardname = cardList[i].GetComponent<CardSettings>().CardName;
-            PlayerPrefs.SetString(CURRENT_PLAYER_NAME+"DeckCard" + i, cardname);
+            PlayerPrefs.SetString(CURRENT_PLAYER_NAME + "DeckCard" + i, cardname);
             PlayerData.Deck.Add(cardname);
         }
-        SavePlayerData(PlayerData);
-    }
-    public void SavePlayerData(PlayerInfoData playerData)
-    {
-        string jsonData = JsonUtility.ToJson(playerData);
-
-        SaveUserToFirebase(jsonData);
+        SaveUserToFirebase();
     }
     private void SaveToFile(string jsonData)
     {
@@ -115,27 +110,63 @@ public class SaveManager : MonoBehaviour
     }
     public void LoadPlayerDataFromFirebase()
     {
-                
-                var userId = FireBaseUserAuthenticator.Instance.auth.CurrentUser.UserId;
-                db.RootReference.Child("users").Child(userId).GetValueAsync().ContinueWithOnMainThread(task =>
-                {
-                    if (task.Exception != null)
-                    {
-                        Debug.LogError(task.Exception.Message);
-                        playerData = GenerateDefaulPlayerDataInfo();
-                        onPlayerLoad?.Invoke(PlayerData);
-                    }
-                    else
-                    {
+        var userId = FireBaseUserAuthenticator.Instance.auth.CurrentUser.UserId;
+        LoadPlayerDataFromFirebase(userId);
+    }
+    public void LoadPlayerDataFromFirebase(string userId)
+    {
+        db.RootReference.Child("users").Child(userId).GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.Exception != null)
+            {
+                Debug.LogError(task.Exception.Message);
+                playerData = GenerateDefaulPlayerDataInfo();
+                onPlayerLoad?.Invoke();
+            }
+            else
+            {
 
-                        //here we get the result from our database.
-                        DataSnapshot snap = task.Result;
-                        Debug.Log("Loading was success");
-                        //And send the json data to a function that can update our game.
-                        playerData = ConvertToPlayerInfoData(snap.GetRawJsonValue());
-                        onPlayerLoad?.Invoke(PlayerData);
+                //here we get the result from our database.
+                DataSnapshot snap = task.Result;
+                Debug.Log("Loading was success");
+                //And send the json data to a function that can update our game.
+                playerData = ConvertToPlayerInfoData(snap.GetRawJsonValue());
+                onPlayerLoad?.Invoke();
+            }
+        });
+    }
+    public void LoadMultiplePlayerDataFromFirebase(List<string> userIds)
+    {
+        playerDataList.Clear();
+        for (int i = 0; i < 2; i++)
+        {
+            db.RootReference.Child("users").Child(userIds[i]).GetValueAsync().ContinueWithOnMainThread(task =>
+            {
+                if (task.Exception != null)
+                {
+                    Debug.LogError(task.Exception.Message);
+                    playerData = GenerateDefaulPlayerDataInfo();
+                }
+                else
+                {
+
+                    //here we get the result from our database.
+                    DataSnapshot snap = task.Result;
+                    Debug.Log("Loading multiple players was success");
+                    //And send the json data to a function that can update our game.
+                    playerData = ConvertToPlayerInfoData(snap.GetRawJsonValue());
+                    playerDataList.Add(playerData);
+                    if (i == 1)
+                    {
+                        onMultiplePlayersLoaded?.Invoke();
                     }
-                });
+                }
+            });
+        }
+    }
+    public List<PlayerInfoData> GetPlayersDataForGameSession()
+    {
+        return playerDataList;
     }
     public PlayerInfoData GetLoadedPlayer()
     {
@@ -161,15 +192,16 @@ public class SaveManager : MonoBehaviour
         return PlayerData;
     }
 
-   
-    private void SaveUserToFirebase(string data)
+
+    public void SaveUserToFirebase()
     {
         Debug.Log("Trying to save to firebase...");
         var userId = FireBaseUserAuthenticator.Instance.auth.CurrentUser.UserId;
+        string jsonData = JsonUtility.ToJson(playerData);
         //puts the json data in the "users/userId" part of the database.
         var dataRef = db.RootReference.Child("users").Child(userId);
         //SaveToDataFireBase(dataRef,data);
-        db.RootReference.Child("users").Child(userId).SetRawJsonValueAsync(data).ContinueWithOnMainThread(task =>
+        db.RootReference.Child("users").Child(userId).SetRawJsonValueAsync(jsonData).ContinueWithOnMainThread(task =>
         {
             if (task.Exception != null)
             {
@@ -190,7 +222,11 @@ public class SaveManager : MonoBehaviour
         gameData.gameID = key;
         gameData.players++;
         gameData.playerIDs.Add(FireBaseUserAuthenticator.Instance.auth.CurrentUser.UserId);
-        gameData.displayName = PlayerPrefs.GetString(CURRENT_PLAYER_NAME)+"´s Game";
+        gameData.displayName = PlayerPrefs.GetString(CURRENT_PLAYER_NAME) + "´s Game";
+        for (int i = 0; i < 9; i++)
+        {
+            gameData.cardsOnField.Add(null);
+        }
         SaveGameSession(gameData, key);
     }
     public void LoadGameSessions()
@@ -213,6 +249,23 @@ public class SaveManager : MonoBehaviour
                     GameSessions.Add(data);
                 }
                 onGameSessionsLoaded?.Invoke();
+            }
+        });
+    }
+    public void LoadPlayerGameSession(string gameId)
+    {
+        db.RootReference.Child("games/").Child(gameId).GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.Exception != null)
+            {
+                Debug.LogError(task.Exception.Message);
+            }
+            else
+            {
+                DataSnapshot snap = task.Result;
+                Debug.Log("Loading Game Session was successful: "+gameId);
+                GameData data = JsonUtility.FromJson<GameData>(snap.GetRawJsonValue());
+                onStartGameSessionLoaded?.Invoke(data);
             }
         });
     }

@@ -8,6 +8,7 @@ public class GameSelector : MonoBehaviour
 {
     public static event OnSendMessage onSendMessage;
 
+    bool alreadyInGame = false;
     private void Start()
     {
         SaveManager.onGameSessionsLoaded += JoinGameSession;
@@ -23,9 +24,20 @@ public class GameSelector : MonoBehaviour
         foreach (var game in SaveManager.Instance.GameSessions)
         {
             Debug.Log("Checking");
+            foreach (var playerGameId in SaveManager.Instance.PlayerData.inGameID)
+            {
+                if (playerGameId.Equals(game.gameID))
+                {
+                    alreadyInGame = true;
+                    return game;
+                }
+
+            }
+        }
+        foreach (var game in SaveManager.Instance.GameSessions)
+        {
             if (game.players < 2)
             {
-                
                 return game;
             }
         }
@@ -34,19 +46,26 @@ public class GameSelector : MonoBehaviour
     void JoinGameSession()
     {
         GameData data = CheckIfEmptySpotInGame();
-        if(data != null)
+        if (data != null && !alreadyInGame)
         {
             SaveManager.Instance.PlayerData.inGameID.Add(data.gameID);
             data.players++;
             data.playerIDs.Add(FireBaseUserAuthenticator.Instance.auth.CurrentUser.UserId);
-            SaveManager.Instance.SaveGameSession(data,data.gameID);
+            SaveManager.Instance.SaveGameSession(data, data.gameID);
             Debug.Log("Joining");
         }
-        else
+        else if(!alreadyInGame)
         {
             SaveManager.Instance.CreateNewGameSession();
             Debug.Log("Creating");
         }
+        else
+        {
+            ChangeSceneOnJoin();
+            Debug.Log("Joining active game");
+        }
+        SaveManager.Instance.SaveUserToFirebase();
+        alreadyInGame = false;
     }
     void ChangeSceneOnJoin()
     {
