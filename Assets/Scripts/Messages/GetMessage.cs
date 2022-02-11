@@ -10,7 +10,7 @@ public class GetMessage : MonoBehaviour
     {
         SaveManager.onSendMessage += SendWarningMessage;
         FindPlayerDeck.onSendMessage += SendWarningMessage;
-        AddChallenger.onSendMessage += SendWarningMessage;
+        GameSelector.onSendMessage += SendWarningMessage;
         FireBaseUserAuthenticator.onSendMessage += SendWarningMessage;
         CheckValidDeck.onSendMessage += SendWarningMessage;
     }
@@ -18,7 +18,7 @@ public class GetMessage : MonoBehaviour
     {
         SaveManager.onSendMessage -= SendWarningMessage;
         FindPlayerDeck.onSendMessage -= SendWarningMessage;
-        AddChallenger.onSendMessage -= SendWarningMessage;
+        GameSelector.onSendMessage -= SendWarningMessage;
         FireBaseUserAuthenticator.onSendMessage -= SendWarningMessage;
         CheckValidDeck.onSendMessage -= SendWarningMessage;
     }
@@ -26,7 +26,7 @@ public class GetMessage : MonoBehaviour
     {
         SaveManager.onSendMessage -= SendWarningMessage;
         FindPlayerDeck.onSendMessage -= SendWarningMessage;
-        AddChallenger.onSendMessage -= SendWarningMessage;
+        GameSelector.onSendMessage -= SendWarningMessage;
         FireBaseUserAuthenticator.onSendMessage -= SendWarningMessage;
         CheckValidDeck.onSendMessage -= SendWarningMessage;
     }

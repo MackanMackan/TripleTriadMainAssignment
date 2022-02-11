@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 [Serializable]
 public class GameData
 {
-    public string player1UserId;
-    public string player2UserId;
-    public int player1Score;
-    public int player2Score;
-    public GameObject[] cardsOnField;
+    public string displayName;
+    public List<string> playerIDs;
+    public List<GameObject> cardsOnField;
+    public string gameID;
+    public int players;
+    public bool playerTurn = true;
 }
