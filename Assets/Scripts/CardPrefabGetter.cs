@@ -17,9 +17,9 @@ public class CardPrefabGetter : MonoBehaviour
     }
     public GameObject GetCard(string name)
     {
-       foreach(GameObject card in cardCompareList)
+       foreach(GameObject card in cardList)
         {
-            if (card.GetComponent<CardSettings>().CardName.Equals(name))
+            if (card.GetComponent<CardSettings>().card.cardName.Equals(name))
             {
                 return card;
             }

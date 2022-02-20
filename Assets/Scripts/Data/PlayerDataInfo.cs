@@ -7,5 +7,5 @@ public struct PlayerInfoData
 {
     public string Name;
     public List<string> Deck;
-    public List<string> inGameID;
+    public string inGameID;
 }

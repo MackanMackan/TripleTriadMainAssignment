@@ -2,25 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public delegate void OnChangeTurn(bool playerTurn);
 public class ChangePlayerTurn : MonoBehaviour
 {
-    private List<IChangeTurnObserver> observers = new List<IChangeTurnObserver>();
-    bool playerOneTurn = true;
+    public static event OnChangeTurn onChangeTurn;
 
-    public void AddChangeTurnObserver(IChangeTurnObserver observer)
+    bool playerOneTurn = true;
+    public void ChangePlayersTurn()
     {
-        observers.Add(observer);
-    }
-    public void NotifyChangingPlayerTurn(bool playerOneTurn)
-    {
-        foreach (var observer in observers)
-        {
-            observer.NotifyChangeTurn(playerOneTurn);
-        }
-    }
-    public void ChangeTurn()
-    {
-        playerOneTurn = !playerOneTurn;
-        NotifyChangingPlayerTurn(playerOneTurn);
+        playerOneTurn = !SaveManager.Instance.gameData.playerTurn;
+        onChangeTurn?.Invoke(playerOneTurn);
     }
 }

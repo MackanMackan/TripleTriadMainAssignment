@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Firebase.Auth;
 using UnityEngine.UI;
 
 public class GetPlayerDecks : MonoBehaviour
@@ -15,22 +16,19 @@ public class GetPlayerDecks : MonoBehaviour
     PlaceCardInField placeCardInField;
     private void OnEnable()
     {
-        FireBaseUserAuthenticator.onDataBaseConnected += LoadThisPlayer;
-        SaveManager.onPlayerLoad += LoadDecksOnAfterDatabaseConnected;
+        SaveManager.onPlayerLoad += LoadGameSessionFromPlayer;
         SaveManager.onStartGameSessionLoaded += LoadPlayers;
         SaveManager.onMultiplePlayersLoaded += GetLoadedPlayers;
     }
     private void OnDisable()
     {
-        FireBaseUserAuthenticator.onDataBaseConnected -= LoadThisPlayer;
-        SaveManager.onPlayerLoad -= LoadDecksOnAfterDatabaseConnected;
+        SaveManager.onPlayerLoad -= LoadGameSessionFromPlayer;
         SaveManager.onStartGameSessionLoaded -= LoadPlayers;
         SaveManager.onMultiplePlayersLoaded -= GetLoadedPlayers;
     }
     private void OnDestroy()
     {
-        FireBaseUserAuthenticator.onDataBaseConnected -= LoadThisPlayer;
-        SaveManager.onPlayerLoad -= LoadDecksOnAfterDatabaseConnected;
+        SaveManager.onPlayerLoad -= LoadGameSessionFromPlayer;
         SaveManager.onStartGameSessionLoaded -= LoadPlayers;
         SaveManager.onMultiplePlayersLoaded -= GetLoadedPlayers;
     }
@@ -42,25 +40,29 @@ public class GetPlayerDecks : MonoBehaviour
         cardGetter = GameObject.Find("CardPrefabGetter").GetComponent<CardPrefabGetter>();
         placeCardInField = GameObject.Find("Canvas").GetComponent<PlaceCardInField>();
         playDataList = new List<PlayerInfoData>();
+        LoadThisPlayer();
     }
     void LoadThisPlayer()
     {
-        SaveManager.Instance.LoadPlayerDataFromFirebase(FireBaseUserAuthenticator.Instance.auth.CurrentUser.UserId);
+        SaveManager.Instance.LoadPlayerDataFromFirebase();
     }
-    void LoadDecksOnAfterDatabaseConnected()
+    public void LoadGameSessionFromPlayer()
     {
-        Debug.Log("Kuck1");
-        SaveManager.Instance.LoadPlayerGameSession(SaveManager.Instance.PlayerData.inGameID[0]);
+        Debug.Log("Stage1");
+        SaveManager.Instance.LoadPlayerGameSession(SaveManager.Instance.PlayerData.inGameID);
+        SaveManager.onPlayerLoad -= LoadGameSessionFromPlayer;
     }
-    void LoadPlayers(GameData gameData)
+    public void LoadPlayers(GameData gameData)
     {
-        Debug.Log("Kuck2");
-        SaveManager.Instance.LoadMultiplePlayerDataFromFirebase(gameData.playerIDs);
+        Debug.Log("Stage2");
+        SaveManager.Instance.LoadPlayersInGameSessionFromFirebase(gameData.playerIDs);
+        SaveManager.onStartGameSessionLoaded -= LoadPlayers;
     }
     void GetLoadedPlayers()
     {
-        Debug.Log("Kuck3");
+        Debug.Log("Stage3");
         playDataList = SaveManager.Instance.GetPlayersDataForGameSession();
+        SaveManager.onMultiplePlayersLoaded -= GetLoadedPlayers;
         AddPlayerOneDeck();
         AddPlayerTwoDeck();
     }

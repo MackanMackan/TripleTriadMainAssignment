@@ -1,41 +1,47 @@
 using System.Collections;
+using Firebase.Database;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
-public class MatchManager : MonoBehaviour, IChangeTurnObserver
+public delegate void OnGameOver();
+public class MatchManager : MonoBehaviour
 {
+    public List<GameObject> cardPlaceHolders;
     [SerializeField]
     TMP_Text playerWinnerText;
     int turns;
-    ChangePlayerTurn changePlayerTurnObserver;
     GameObject gameBoard;
 
     static int player1Score = 0;
     static int player2Score = 0;
 
+    public static event OnGameOver onGameOver;
     void Start()
     {
-        changePlayerTurnObserver = GameObject.Find("Canvas").GetComponent<ChangePlayerTurn>();
-        changePlayerTurnObserver.AddChangeTurnObserver(gameObject.GetComponent<MatchManager>());
+        SaveManager.onStartGameSessionLoaded += SetThisMatchDatabaseListener;
         gameBoard = GameObject.Find("GameBoard");
         //TODO: flip coin who starts, and add one score to the other player to balance scoreing out
     }
-
-    public void NotifyChangeTurn(bool playerOneTurn)
+    void SetThisMatchDatabaseListener(GameData gameData)
     {
-        turns++;
-        if(turns == 9)
+        FirebaseDatabase.DefaultInstance.RootReference.Child("games").Child(gameData.gameID).Child("numberOfTurns").ValueChanged += CheckIfGameIsOver;
+        SaveManager.onStartGameSessionLoaded -= SetThisMatchDatabaseListener;
+    }
+    void CheckIfGameIsOver(object sender, ValueChangedEventArgs args)
+    {
+        if (args.DatabaseError != null)
         {
-            if (playerOneTurn)
-            {
-                player1Score++;
-            }
-            else
-            {
-                player2Score++;
-            }
+            Debug.LogError(args.DatabaseError.Message);
+            return;
+        }
 
+        Debug.Log("TURNCHECK"+ args.Snapshot.Value);
+        int turns = int.Parse(args.Snapshot.Value.ToString());
+        Debug.Log("turns "+ turns);
+        if (turns == 9)
+        {
             CalculateWinner();
         }
     }
@@ -43,6 +49,7 @@ public class MatchManager : MonoBehaviour, IChangeTurnObserver
     {
         string winner;
 
+        ScanGameBoardFrames();
         if (player1Score == player2Score)
         {
             winner = "Stalemate";
@@ -51,7 +58,6 @@ public class MatchManager : MonoBehaviour, IChangeTurnObserver
         {
             winner = player1Score > player2Score ? PlayerPrefs.GetString("PLAYER1") : PlayerPrefs.GetString("PLAYER2");
         }
-
 
         RemoveBoard();
         ShowWinner(winner);
@@ -64,6 +70,7 @@ public class MatchManager : MonoBehaviour, IChangeTurnObserver
     {
         playerWinnerText.transform.parent.gameObject.SetActive(true);
         playerWinnerText.text = winner.Equals("Stalemate") ? winner+"!" : winner + " Wins!";
+        onGameOver?.Invoke();
     }
     public static void ReportPlayerScore(Sprite frame)
     {
@@ -87,6 +94,27 @@ public class MatchManager : MonoBehaviour, IChangeTurnObserver
         else
         {
             player2Score++;
+        }
+    }
+    void SaveGameData(GameData gameData)
+    {
+        SaveManager.Instance.SaveGameSession(gameData, gameData.gameID);
+    }
+    void ScanGameBoardFrames()
+    {
+        string frame;
+        for (int i = 0; i < 9; i++)
+        {
+            //checks all the frames and sees whos the winner based on frames on board.
+            frame = cardPlaceHolders[i].transform.GetChild(1).GetChild(2).GetComponent<Image>().sprite.name;
+            if (frame.Equals("RedFrame"))
+            {
+                player1Score++;
+            }
+            else
+            {
+                player2Score++;
+            }
         }
     }
 }

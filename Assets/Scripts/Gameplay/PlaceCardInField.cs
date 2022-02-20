@@ -37,7 +37,7 @@ public class PlaceCardInField : MonoBehaviour
             combatCards = cardPlaceholder.GetComponent<CombatNearbyCards>();
             combatCards.MyCard = card.GetComponent<CardSettings>();
             combatCards.Fight();
-            changeTurn.ChangeTurn();
+            changeTurn.ChangePlayersTurn();
         }
     }
 }

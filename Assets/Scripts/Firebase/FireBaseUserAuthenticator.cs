@@ -10,6 +10,7 @@ using TMPro;
 
 public delegate void HasConnectedToDataBase();
 public delegate void OnSignIn();
+public delegate void OnRegisterNew();
 public class FireBaseUserAuthenticator : MonoBehaviour
 {
     private static FireBaseUserAuthenticator instance;
@@ -24,6 +25,7 @@ public class FireBaseUserAuthenticator : MonoBehaviour
     public static event OnSendMessage onSendMessage;
     public static event HasConnectedToDataBase onDataBaseConnected;
     public static event OnSignIn onSignIn;
+    public static event OnRegisterNew onRegisterNew;
     private void Awake()
     {
         if (instance == null)
@@ -38,6 +40,7 @@ public class FireBaseUserAuthenticator : MonoBehaviour
     }
     void Start()
     {
+        if(SceneManager.GetActiveScene().name.Equals("MainMenu"))
         ConnectToFireBase();
     }
 
@@ -59,7 +62,7 @@ public class FireBaseUserAuthenticator : MonoBehaviour
                 SaveManager.Instance.SaveName(email.text);
 
                 onSendMessage?.Invoke("Registration Complete");
-                onSignIn?.Invoke();
+                onRegisterNew?.Invoke();
 
                 loginMenu.SetActive(false);
                 mainMenu.SetActive(true);

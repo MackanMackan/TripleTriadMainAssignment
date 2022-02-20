@@ -46,7 +46,7 @@ public class CheckValidDeck : MonoBehaviour
             for (int i = 0; i < 5; i++)
             {
                 
-                if (card.GetComponent<CardSettings>().CardName.Equals(cardValidationList[i].GetComponent<CardSettings>().CardName))
+                if (card.GetComponent<CardSettings>().CardName.Equals(cardValidationList[i].GetComponent<CardSettings>().card.cardName))
                 {
                     doubles++;
                     if (doubles == 2)
@@ -70,11 +70,11 @@ public class CheckValidDeck : MonoBehaviour
         int amountOf5Stars = 1;
         foreach (GameObject card in cards)
         {
-            if (card.GetComponent<CardSettings>().StarLevel == 4)
+            if (card.GetComponent<CardSettings>().card.starLevel == 4)
             {
                 amountOf4Stars--;
             }
-            else if (card.GetComponent<CardSettings>().StarLevel == 5)
+            else if (card.GetComponent<CardSettings>().card.starLevel == 5)
             {
                 amountOf4Stars--;
                 amountOf5Stars--;
