@@ -23,7 +23,6 @@ public class ActiveMatchGameDataHandler : MonoBehaviour
         ChangePlayerTurn.onChangeTurn += SaveGameTurnToFireBase;
         MatchManager.onGameOver += CleanUpAtGameOver;
     }
-    //TODO: Add a wait for next player to join before starting to load anything
     void SetThisMatchDatabaseListener(GameData gameData)
     {
         FirebaseDatabase.DefaultInstance.RootReference.Child("games").Child(gameData.gameID).ValueChanged += LoadGameData;

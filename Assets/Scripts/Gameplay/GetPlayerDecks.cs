@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Firebase.Auth;
 using UnityEngine.UI;
+using System.Collections;
 
 public class GetPlayerDecks : MonoBehaviour
 {
@@ -18,19 +19,19 @@ public class GetPlayerDecks : MonoBehaviour
     {
         SaveManager.onPlayerLoad += LoadGameSessionFromPlayer;
         SaveManager.onStartGameSessionLoaded += LoadPlayers;
-        SaveManager.onMultiplePlayersLoaded += GetLoadedPlayers;
+        SaveManager.onMultiplePlayersLoaded += CallCorutineForGettingLoadedPlayers;
     }
     private void OnDisable()
     {
         SaveManager.onPlayerLoad -= LoadGameSessionFromPlayer;
         SaveManager.onStartGameSessionLoaded -= LoadPlayers;
-        SaveManager.onMultiplePlayersLoaded -= GetLoadedPlayers;
+        SaveManager.onMultiplePlayersLoaded -= CallCorutineForGettingLoadedPlayers;
     }
     private void OnDestroy()
     {
         SaveManager.onPlayerLoad -= LoadGameSessionFromPlayer;
         SaveManager.onStartGameSessionLoaded -= LoadPlayers;
-        SaveManager.onMultiplePlayersLoaded -= GetLoadedPlayers;
+        SaveManager.onMultiplePlayersLoaded -= CallCorutineForGettingLoadedPlayers;
     }
     void Start()
     {
@@ -62,9 +63,19 @@ public class GetPlayerDecks : MonoBehaviour
     {
         Debug.Log("Stage3");
         playDataList = SaveManager.Instance.GetPlayersDataForGameSession();
-        SaveManager.onMultiplePlayersLoaded -= GetLoadedPlayers;
+        SaveManager.onMultiplePlayersLoaded -= CallCorutineForGettingLoadedPlayers;
         AddPlayerOneDeck();
         AddPlayerTwoDeck();
+    }
+    void CallCorutineForGettingLoadedPlayers()
+    {
+        StartCoroutine(WaitToGetLoadedPlayer());
+    }
+
+    IEnumerator WaitToGetLoadedPlayer()
+    {
+        yield return new WaitForSeconds(1.5f);
+        GetLoadedPlayers();
     }
     void AddPlayerOneDeck()
     {

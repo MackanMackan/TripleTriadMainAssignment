@@ -270,6 +270,7 @@ public class SaveManager : MonoBehaviour
     public void SaveGameSession(GameData data, string key)
     {
         string path = "games/" + key;
+        gameData = data;
         string json = JsonUtility.ToJson(data);
         db.RootReference.Child(path).SetRawJsonValueAsync(json).ContinueWithOnMainThread(task =>
         {
@@ -286,7 +287,7 @@ public class SaveManager : MonoBehaviour
             }
         });
     }
-    void SaveToDataFireBase(DatabaseReference reference, object data)
+    void SaveToDataFireBase<T>(DatabaseReference reference, T data, string id)
     {
         string jsonData = JsonUtility.ToJson(data);
         reference.SetRawJsonValueAsync(jsonData).ContinueWithOnMainThread(task =>

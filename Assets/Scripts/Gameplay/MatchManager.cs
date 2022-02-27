@@ -37,9 +37,7 @@ public class MatchManager : MonoBehaviour
             return;
         }
 
-        Debug.Log("TURNCHECK"+ args.Snapshot.Value);
         int turns = int.Parse(args.Snapshot.Value.ToString());
-        Debug.Log("turns "+ turns);
         if (turns == 9)
         {
             CalculateWinner();
