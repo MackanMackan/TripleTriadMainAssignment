@@ -87,6 +87,7 @@ public class ActiveMatchGameDataHandler : MonoBehaviour
     public void SaveGameTurnToFireBase(bool playerTurn)
     {
         string cardAndFrame;
+        int cardsOnField = 0;
         for (int i = 0; i < 9; i++)
         {
             if (cardPlaceHolders[i].transform.childCount < 2)
@@ -97,9 +98,10 @@ public class ActiveMatchGameDataHandler : MonoBehaviour
             //Puts the name of the card and which players frame in one string since its the most essential info for the game
             cardAndFrame = cardPlaceHolders[i].transform.GetChild(1).gameObject.GetComponent<CardSettings>().CardName + "." + cardPlaceHolders[i].transform.GetChild(1).GetChild(2).GetComponent<Image>().sprite.name;
             activeGameData.cardsOnField[i] = cardAndFrame;
+            cardsOnField++;
         }
         activeGameData.playerTurn = playerTurn;
-        activeGameData.numberOfTurns++;
+        activeGameData.numberOfTurns = cardsOnField;
         SaveGameData();
     }
     void SaveGameData()
