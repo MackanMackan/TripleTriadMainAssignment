@@ -18,10 +18,13 @@ public class WaitingForSecondPlayer : MonoBehaviour
 
     void StartGame(object sender, ValueChangedEventArgs args)
     {
-        waitngForPlayer.SetActive(false);
-        getPLDecks.enabled = true;
-        matchDataHandler.enabled = true;
-        matchManager.enabled = true;
+        string players = args.Snapshot.Value.ToString();
+        if (players.Equals("2")){
+            waitngForPlayer.SetActive(false);
+            getPLDecks.enabled = true;
+            matchDataHandler.enabled = true;
+            matchManager.enabled = true;
+        }
     }
     void SetDataBaseListener()
     {

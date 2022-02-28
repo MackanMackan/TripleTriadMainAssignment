@@ -20,7 +20,9 @@ public class SaveManager : MonoBehaviour
     public static string PLAYER_ONE => PLAYER_1;
 
     public List<GameData> GameSessions { get => gameSessions; }
-    public PlayerInfoData PlayerData { get => playerData; }
+    public PlayerInfoData PlayerData { get => playerData; set => playerData = value; }
+
+    private PlayerInfoData playerData1;
 
     public static event HasLoaded onPlayerLoad;
     public static event OnSendMessage onSendMessage;

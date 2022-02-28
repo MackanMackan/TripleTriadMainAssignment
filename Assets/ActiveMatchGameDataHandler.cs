@@ -112,11 +112,7 @@ public class ActiveMatchGameDataHandler : MonoBehaviour
     }
     void CleanUpAtGameOver()
     {
-        activeGameData.cardsOnField = new string[9];
-        activeGameData.players = 0;
-        activeGameData.playerTurn = true;
-        activeGameData.numberOfTurns = 0;
-        activeGameData.playerIDs.Clear();
+        activeGameData = new GameData();
         SaveManager.Instance.SaveGameSession(activeGameData, gameId);
     }
 }

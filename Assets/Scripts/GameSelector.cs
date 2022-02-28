@@ -25,10 +25,11 @@ public class GameSelector : MonoBehaviour
         foreach (var game in SaveManager.Instance.GameSessions)
         {
             Debug.Log("Checking");
-                if (SaveManager.Instance.PlayerData.inGameID.Equals(game.gameID))
+            string userId = FireBaseUserAuthenticator.Instance.auth.CurrentUser.UserId;
+                if (userId.Equals(game.playerIDs[0]) 
+                || userId.Equals(game.playerIDs[1]))
                 {
-                Debug.Log("InsideCheckking");
-                alreadyInGame = true;
+                    alreadyInGame = true;
                     return game;
                 }
 
@@ -61,6 +62,7 @@ public class GameSelector : MonoBehaviour
         else
         {
             ChangeSceneOnJoin();
+            SaveManager.Instance.SetPlayerGameID(data.gameID);
             Debug.Log("Joining active game");
         }
         SaveManager.Instance.SaveUserToFirebase();
