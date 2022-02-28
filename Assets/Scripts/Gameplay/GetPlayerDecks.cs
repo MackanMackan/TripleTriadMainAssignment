@@ -94,6 +94,15 @@ public class GetPlayerDecks : MonoBehaviour
             Button instanceButton = instancedCard.GetComponent<Button>();
             instanceButton.onClick.AddListener(cardMenus.GetComponent<MoveChooseCardMenu>().MoveMenuAwayFromScreen);
             instanceButton.onClick.AddListener(delegate { placeCardInField.ChooseCardToPlay(instancedCard); });
+
+            if (SaveManager.Instance.gameData.playerTurn && player1.Name.Contains(SaveManager.Instance.GetCurrentPlayerName()))
+            {
+                cardMenuPlOne.SetActive(true);
+            }
+            else
+            {
+                cardMenuPlOne.SetActive(false);
+            }
         }
     }
     private void AddPlayerTwoDeck()
@@ -114,6 +123,14 @@ public class GetPlayerDecks : MonoBehaviour
             instanceButton.onClick.AddListener(cardMenus.GetComponent<MoveChooseCardMenu>().MoveMenuAwayFromScreen);
             instanceButton.onClick.AddListener(delegate { placeCardInField.ChooseCardToPlay(instancedCard); });
         }
-        cardMenuPlTwo.SetActive(false);
+
+        if (!SaveManager.Instance.gameData.playerTurn && player2.Name.Contains(SaveManager.Instance.GetCurrentPlayerName()))
+        {
+            cardMenuPlTwo.SetActive(true);
+        }
+        else
+        {
+            cardMenuPlTwo.SetActive(false);
+        }
     }
 }
