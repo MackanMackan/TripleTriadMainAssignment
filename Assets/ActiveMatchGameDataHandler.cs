@@ -108,9 +108,11 @@ public class ActiveMatchGameDataHandler : MonoBehaviour
     }
     void CleanUpAtGameOver()
     {
-        activeGameData = new GameData();
+        GameData cleanData = new GameData();
+        cleanData.gameID = activeGameData.gameID;
+        cleanData.displayName = activeGameData.displayName;
         SaveManager.Instance.SetPlayerGameID("");
         SaveManager.Instance.SaveUserToFirebase();
-        SaveManager.Instance.SaveGameSession(activeGameData, gameId);
+        SaveManager.Instance.SaveGameSession(cleanData, gameId);
     }
 }
