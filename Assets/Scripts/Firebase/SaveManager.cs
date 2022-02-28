@@ -289,6 +289,23 @@ public class SaveManager : MonoBehaviour
             }
         });
     }
+    public void RemoveGameSession(string key)
+    {
+        string path = "games/" + key;
+        db.RootReference.Child(path).RemoveValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.Exception != null)
+            {
+                Debug.LogError(task.Exception.Message);
+
+                onSendMessage?.Invoke("Something went wrong when trying to save to database: " + task.Exception.Message);
+            }
+            else
+            {
+                Debug.Log("Sesson Removed:" + key);
+            }
+        });
+    }
     void SaveToDataFireBase<T>(DatabaseReference reference, T data, string id)
     {
         string jsonData = JsonUtility.ToJson(data);
