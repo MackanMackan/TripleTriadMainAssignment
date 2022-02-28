@@ -12,8 +12,6 @@ public class ActiveMatchGameDataHandler : MonoBehaviour
 
 
     string gameId;
-    string player1ID;
-    string player2ID;
     public static GameData activeGameData;
     CardPrefabGetter cardGetter;
     void Start()
@@ -28,8 +26,6 @@ public class ActiveMatchGameDataHandler : MonoBehaviour
         FirebaseDatabase.DefaultInstance.RootReference.Child("games").Child(gameData.gameID).ValueChanged += LoadGameData;
         gameId = gameData.gameID;
         activeGameData = gameData;
-        player1ID = gameData.playerIDs[0];
-        player2ID = gameData.playerIDs[1];
         InitLoadGameData();
     }
     void LoadGameData(object sender, ValueChangedEventArgs args)

@@ -1,3 +1,4 @@
+using Firebase.Database;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,13 +12,13 @@ public class ActivePlayerCardMenu : MonoBehaviour
     {
         player1CardMenu = GameObject.Find("PlayerOneCardMenu");
         player2CardMenu = GameObject.Find("PlayerTwoCardMenu");
-        SaveManager.onGameSessionSaved += ChangeActiveCardMenu;
+        SaveManager.onStartGameSessionLoaded += ChangeActiveCardMenu;
     }
 
-    public void ChangeActiveCardMenu()
+    public void ChangeActiveCardMenu(GameData gameData)
     {
-        string playerGameId = ActiveMatchGameDataHandler.activeGameData.playerIDs[0];
-        bool player1Turn = ActiveMatchGameDataHandler.activeGameData.playerTurn;
+        string playerGameId = gameData.playerIDs[0];
+        bool player1Turn = gameData.playerTurn;
         if (player1Turn && playerGameId.Equals(FireBaseUserAuthenticator.Instance.auth.CurrentUser.UserId))
         {
             player1CardMenu.SetActive(true);
@@ -29,7 +30,7 @@ public class ActivePlayerCardMenu : MonoBehaviour
             cardListButton.SetActive(false);
         }
 
-        playerGameId = ActiveMatchGameDataHandler.activeGameData.playerIDs[1];
+        playerGameId = gameData.playerIDs[1];
 
         if (!player1Turn && playerGameId.Equals(FireBaseUserAuthenticator.Instance.auth.CurrentUser.UserId))
         {
