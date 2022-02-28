@@ -25,9 +25,7 @@ public class GameSelector : MonoBehaviour
         foreach (var game in SaveManager.Instance.GameSessions)
         {
             Debug.Log("Checking");
-            string userId = FireBaseUserAuthenticator.Instance.auth.CurrentUser.UserId;
-                if (userId.Equals(game.playerIDs[0]) 
-                || userId.Equals(game.playerIDs[1]))
+                if (SaveManager.Instance.PlayerData.inGameID.Equals(game.gameID))
                 {
                     alreadyInGame = true;
                     return game;
