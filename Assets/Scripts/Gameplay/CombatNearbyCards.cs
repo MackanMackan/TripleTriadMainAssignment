@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -65,13 +64,23 @@ public class CombatNearbyCards : MonoBehaviour
     }
     void GetTopFighter()
     {
+
         try
         {
-            topFighter = topFighter.transform.GetChild(1).gameObject;
-            enemyCardsValues.Add(topFighter.GetComponent<CardSettings>().BottomValue);
+            if(topFighter != null)
+            {
+                topFighter = topFighter.transform.GetChild(1).gameObject;
+                enemyCardsValues.Add(topFighter.GetComponent<CardSettings>().card.bottomValue);
+            }
+            else
+            {
+                enemyCardsValues.Add(0);
+            }
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            Debug.Log(e.Message);
+
             enemyCardsValues.Add(0);
         }
     }
@@ -79,11 +88,19 @@ public class CombatNearbyCards : MonoBehaviour
     {
         try
         {
-            rightFighter = rightFighter.transform.GetChild(1).gameObject;
-            enemyCardsValues.Add(rightFighter.GetComponent<CardSettings>().LeftValue);
+            if(rightFighter != null) { 
+                rightFighter = rightFighter.transform.GetChild(1).gameObject;
+                enemyCardsValues.Add(rightFighter.GetComponent<CardSettings>().card.leftValue);
+            }
+            else
+            {
+                enemyCardsValues.Add(0);
+            }
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            Debug.Log(e.Message);
+
             enemyCardsValues.Add(0);
         }
     }
@@ -91,11 +108,20 @@ public class CombatNearbyCards : MonoBehaviour
     {
         try
         {
-            bottomFighter = bottomFighter.transform.GetChild(1).gameObject;
-            enemyCardsValues.Add(bottomFighter.GetComponent<CardSettings>().TopValue);
+            if(bottomFighter != null)
+            {
+                bottomFighter = bottomFighter.transform.GetChild(1).gameObject;
+                enemyCardsValues.Add(bottomFighter.GetComponent<CardSettings>().card.topValue);
+            }
+            else
+            {
+                enemyCardsValues.Add(0);
+            }
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            Debug.Log(e.Message);
+
             enemyCardsValues.Add(0);
         }
     }
@@ -103,20 +129,29 @@ public class CombatNearbyCards : MonoBehaviour
     {
         try
         {
-            leftFighter = leftFighter.transform.GetChild(1).gameObject;
-            enemyCardsValues.Add(leftFighter.GetComponent<CardSettings>().RightValue);
+            if(leftFighter != null)
+            {
+                leftFighter = leftFighter.transform.GetChild(1).gameObject;
+                enemyCardsValues.Add(leftFighter.GetComponent<CardSettings>().card.rightValue);
+            }
+            else
+            {
+                enemyCardsValues.Add(0);
+            }
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            Debug.Log(e.Message);
+
             enemyCardsValues.Add(0);
         }
     }
     void AddMyCardValuesToList()
     {
-        myCardValues.Add(myCard.TopValue);
-        myCardValues.Add(myCard.RightValue);
-        myCardValues.Add(myCard.BottomValue);
-        myCardValues.Add(myCard.LeftValue);
+        myCardValues.Add(myCard.card.topValue);
+        myCardValues.Add(myCard.card.rightValue);
+        myCardValues.Add(myCard.card.bottomValue);
+        myCardValues.Add(myCard.card.leftValue);
     }
     GameObject ReturnFighter(int fighterSpot)
     {

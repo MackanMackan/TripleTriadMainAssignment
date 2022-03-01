@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
-using System.Text;
 using Firebase.Database;
 using Firebase.Extensions;
 
@@ -298,7 +296,7 @@ public class SaveManager : MonoBehaviour
             {
                 Debug.LogError(task.Exception.Message);
 
-                onSendMessage?.Invoke("Something went wrong when trying to save to database: " + task.Exception.Message);
+                onSendMessage?.Invoke("Game has already been removed: " + task.Exception.Message);
             }
             else
             {

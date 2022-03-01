@@ -1,6 +1,3 @@
-using Firebase.Database;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ActivePlayerCardMenu : MonoBehaviour
@@ -22,12 +19,10 @@ public class ActivePlayerCardMenu : MonoBehaviour
         if (player1Turn && playerGameId.Equals(FireBaseUserAuthenticator.Instance.auth.CurrentUser.UserId))
         {
             player1CardMenu.SetActive(true);
-            cardListButton.SetActive(true);
         }
         else
         {
             player1CardMenu.SetActive(false);
-            cardListButton.SetActive(false);
         }
 
         playerGameId = gameData.playerIDs[1];
@@ -35,12 +30,10 @@ public class ActivePlayerCardMenu : MonoBehaviour
         if (!player1Turn && playerGameId.Equals(FireBaseUserAuthenticator.Instance.auth.CurrentUser.UserId))
         {
             player2CardMenu.SetActive(true);
-            cardListButton.SetActive(true);
         }
         else
         {
             player2CardMenu.SetActive(false);
-            cardListButton.SetActive(false);
         }
     }
 }

@@ -110,6 +110,11 @@ public class ActiveMatchGameDataHandler : MonoBehaviour
     }
     void CleanUpAtGameOver()
     {
+        StartCoroutine(CleanUp());
+    }
+    IEnumerator CleanUp()
+    {
+        yield return new WaitForSeconds(5);
         SaveManager.Instance.SetPlayerGameID("");
         SaveManager.Instance.SaveUserToFirebase();
         SaveManager.Instance.RemoveGameSession(gameId);

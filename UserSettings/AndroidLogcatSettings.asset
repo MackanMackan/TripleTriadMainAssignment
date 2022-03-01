@@ -2,16 +2,64 @@
     "m_SelectedDeviceId": "emulator-5554",
     "m_SelectedPackage": {
         "deviceId": "emulator-5554",
-        "name": "com.DefaultCompany.com.unity.template.mobile2D",
-        "processId": 7335,
+        "name": "com.YRGO.IdootsTrialsMainAssignment",
+        "processId": 1141,
         "exited": false
     },
     "m_SelectedPriority": 0,
     "m_KnownPackagesForSerialization": [
         {
             "deviceId": "emulator-5554",
-            "name": "com.DefaultCompany.com.unity.template.mobile2D",
-            "processId": 7335,
+            "name": "com.YRGO.IdootsTrialsMainAssignment",
+            "processId": 29261,
+            "exited": true
+        },
+        {
+            "deviceId": "emulator-5554",
+            "name": "com.google.android.apps.nexuslauncher",
+            "processId": 29444,
+            "exited": true
+        },
+        {
+            "deviceId": "emulator-5554",
+            "name": "com.YRGO.IdootsTrialsMainAssignment",
+            "processId": 30245,
+            "exited": true
+        },
+        {
+            "deviceId": "emulator-5554",
+            "name": "com.google.android.apps.nexuslauncher",
+            "processId": 30452,
+            "exited": true
+        },
+        {
+            "deviceId": "emulator-5554",
+            "name": "com.YRGO.IdootsTrialsMainAssignment",
+            "processId": 31174,
+            "exited": true
+        },
+        {
+            "deviceId": "emulator-5554",
+            "name": "com.google.android.apps.nexuslauncher",
+            "processId": 31362,
+            "exited": false
+        },
+        {
+            "deviceId": "emulator-5554",
+            "name": "com.YRGO.IdootsTrialsMainAssignment",
+            "processId": 32296,
+            "exited": false
+        },
+        {
+            "deviceId": "emulator-5554",
+            "name": "com.YRGO.IdootsTrialsMainAssignment",
+            "processId": 955,
+            "exited": false
+        },
+        {
+            "deviceId": "emulator-5554",
+            "name": "com.YRGO.IdootsTrialsMainAssignment",
+            "processId": 1141,
             "exited": false
         }
     ],
