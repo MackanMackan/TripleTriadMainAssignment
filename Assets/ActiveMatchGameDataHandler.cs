@@ -20,6 +20,7 @@ public class ActiveMatchGameDataHandler : MonoBehaviour
         SaveManager.onStartGameSessionLoaded += SetThisMatchDatabaseListener;
         ChangePlayerTurn.onChangeTurn += SaveGameTurnToFireBase;
         MatchManager.onGameOver += CleanUpAtGameOver;
+        ServiceLocator.GetAudioProvider().PlayLoop("CombatMusic");
     }
     void SetThisMatchDatabaseListener(GameData gameData)
     {

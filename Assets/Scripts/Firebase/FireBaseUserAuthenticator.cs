@@ -56,16 +56,11 @@ public class FireBaseUserAuthenticator : MonoBehaviour
             }
             else
             {
-                FirebaseUser newUser = task.Result;
-                Debug.LogFormat("User Registerd: {0} ({1})",
-                  newUser.DisplayName, newUser.UserId);
-                SaveManager.Instance.SaveName(email.text);
 
                 onSendMessage?.Invoke("Registration Complete");
                 onRegisterNew?.Invoke();
 
-                loginMenu.SetActive(false);
-                mainMenu.SetActive(true);
+                SignIn();
             }
         });
     }

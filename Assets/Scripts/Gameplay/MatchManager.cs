@@ -1,4 +1,3 @@
-using System.Collections;
 using Firebase.Database;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,7 +14,7 @@ public class MatchManager : MonoBehaviour
     GameObject gameBoard;
 
     static int player1Score = 0;
-    static int player2Score = 0;
+    static int player2Score = 1;
 
     public static event OnGameOver onGameOver;
     void Start()
@@ -67,12 +66,12 @@ public class MatchManager : MonoBehaviour
     void ShowWinner(string winner)
     {
         playerWinnerText.transform.parent.gameObject.SetActive(true);
-        playerWinnerText.text = winner.Equals("Stalemate") ? winner+"!" : winner + " Wins!";
+        playerWinnerText.text = winner.Equals("Stalemate") ? winner + "!" : winner + " Wins!";
         onGameOver?.Invoke();
     }
     public static void ReportPlayerScore(Sprite frame)
     {
-        if(frame.name.Equals("RedFrame"))
+        if (frame.name.Equals("RedFrame"))
         {
             player1Score++;
             player2Score--;
@@ -93,10 +92,6 @@ public class MatchManager : MonoBehaviour
         {
             player2Score++;
         }
-    }
-    void SaveGameData(GameData gameData)
-    {
-        SaveManager.Instance.SaveGameSession(gameData, gameData.gameID);
     }
     void ScanGameBoardFrames()
     {
